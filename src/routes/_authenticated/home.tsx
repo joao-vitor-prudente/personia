@@ -1,19 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 
 export const Route = createFileRoute("/_authenticated/home")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { viewer, numbers } =
-    useQuery(api.myFunctions.listNumbers, {
-      count: 10,
-    }) ?? {};
-  const addNumber = useMutation(api.myFunctions.addNumber);
+  const query = useQuery(
+    convexQuery(api.myFunctions.listNumbers, { count: 10 }),
+  );
+  const addNumber = useMutation({
+    mutationFn: useConvexMutation(api.myFunctions.addNumber),
+  });
 
-  if (viewer === undefined || numbers === undefined) {
+  if (!query.data) {
     return (
       <div className="mx-auto">
         <p>loading... (consider a loading skeleton)</p>
@@ -23,7 +25,7 @@ function RouteComponent() {
 
   return (
     <div className="flex flex-col gap-8 max-w-lg mx-auto">
-      <p>Welcome {viewer ?? "Anonymous"}!</p>
+      <p>Welcome {query.data.viewer ?? "Anonymous"}!</p>
       <p>
         Click the button below and open this page in another window - this data
         is persisted in the Convex cloud database!
@@ -32,7 +34,7 @@ function RouteComponent() {
         <button
           className="bg-dark dark:bg-light text-light dark:text-dark text-sm px-4 py-2 rounded-md border-2"
           onClick={() => {
-            void addNumber({ value: Math.floor(Math.random() * 10) });
+            addNumber.mutate({ value: Math.floor(Math.random() * 10) });
           }}
         >
           Add a random number
@@ -40,9 +42,9 @@ function RouteComponent() {
       </p>
       <p>
         Numbers:{" "}
-        {numbers?.length === 0
+        {query.data.numbers?.length === 0
           ? "Click the button!"
-          : (numbers?.join(", ") ?? "...")}
+          : (query.data.numbers?.join(", ") ?? "...")}
       </p>
       <p>
         Edit{" "}
