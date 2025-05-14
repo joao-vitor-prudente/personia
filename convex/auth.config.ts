@@ -2,7 +2,7 @@ const authConfig = {
   providers: [
     {
       applicationID: "convex",
-      domain: process.env.CLERK_JWT_ISSUER_DOMAIN,
+      domain: process.env.VITE_CLERK_FRONTEND_API_URL,
     }
   ],
 };
