@@ -1,13 +1,14 @@
 "use client";
 
-import {
-  Authenticated,
-  Unauthenticated,
-  useMutation,
-  useQuery,
-} from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 export default function App() {
   return (
@@ -20,12 +21,12 @@ export default function App() {
         <h1 className="text-4xl font-bold text-center">
           Convex + React + Clerk
         </h1>
-        <Authenticated>
+        <SignedIn>
           <Content />
-        </Authenticated>
-        <Unauthenticated>
+        </SignedIn>
+        <SignedOut>
           <SignInForm />
-        </Unauthenticated>
+        </SignedOut>
       </main>
     </>
   );
@@ -85,7 +86,7 @@ function Content() {
         Numbers:{" "}
         {numbers?.length === 0
           ? "Click the button!"
-          : numbers?.join(", ") ?? "..."}
+          : (numbers?.join(", ") ?? "...")}
       </p>
       <p>
         Edit{" "}
