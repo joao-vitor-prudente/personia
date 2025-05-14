@@ -25,7 +25,8 @@
     /* Import paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@api": ["./convex/_generated/api"]
     }
   },
   "include": ["src", "convex"]

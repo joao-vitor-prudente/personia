@@ -1,8 +1,7 @@
+import { api } from "@api";
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-
-import { api } from "../../../convex/_generated/api";
 
 export const Route = createFileRoute("/_authenticated/home")({
   component: RouteComponent,
