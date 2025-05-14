@@ -42,9 +42,9 @@ function RouteComponent() {
       </p>
       <p>
         Numbers:{" "}
-        {query.data.numbers?.length === 0
+        {query.data.numbers.length === 0
           ? "Click the button!"
-          : (query.data.numbers?.join(", ") ?? "...")}
+          : query.data.numbers.join(", ")}
       </p>
       <p>
         Edit{" "}

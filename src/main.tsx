@@ -29,9 +29,14 @@ declare module "@tanstack/react-router" {
   }
 }
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("No root element found");
+
+createRoot(root).render(
   <StrictMode>
-    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider
+      publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string}
+    >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
