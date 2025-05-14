@@ -1,5 +1,5 @@
-import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
 import { useAuth } from "@clerk/clerk-react";
+import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_unauthenticated")({
   component: RouteComponent,

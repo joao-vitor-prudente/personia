@@ -1,6 +1,6 @@
+import { UserButton } from "@clerk/clerk-react";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { UserButton } from "@clerk/clerk-react";
 
 export const Route = createRootRoute({
   component: () => (

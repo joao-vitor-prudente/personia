@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { SignInButton, SignUpButton } from "@clerk/clerk-react";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_unauthenticated/")({
   component: RouteComponent,
