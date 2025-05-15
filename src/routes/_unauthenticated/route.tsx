@@ -7,6 +7,8 @@ export const Route = createFileRoute("/_unauthenticated")({
 
 function RouteComponent() {
   const auth = useAuth();
-  if (!auth.isSignedIn) return <Outlet />;
-  return <Navigate to="/home" />;
+  if (!auth.isLoaded) return null;
+  if (auth.isSignedIn) return <Navigate to="/personas" />;
+
+  return <Outlet />;
 }

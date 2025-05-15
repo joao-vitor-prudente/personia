@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_unauthenticated/")({
 
 function RouteComponent() {
   return (
-    <section className="flex flex-col gap-8 w-96 mx-auto">
+    <main className="flex flex-col gap-8 max-w-lg mx-auto">
       <p>Log in to see the numbers</p>
       <SignInButton mode="modal">
         <button className="bg-dark dark:bg-light text-light dark:text-dark text-sm px-4 py-2 rounded-md border-2">
@@ -19,6 +19,6 @@ function RouteComponent() {
           Sign up
         </button>
       </SignUpButton>
-    </section>
+    </main>
   );
 }

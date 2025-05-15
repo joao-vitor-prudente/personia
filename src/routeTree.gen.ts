@@ -14,7 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated/route'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as UnauthenticatedIndexImport } from './routes/_unauthenticated/index'
-import { Route as AuthenticatedHomeImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedPersonasImport } from './routes/_authenticated/personas'
 
 // Create/Update Routes
 
@@ -34,9 +34,9 @@ const UnauthenticatedIndexRoute = UnauthenticatedIndexImport.update({
   getParentRoute: () => UnauthenticatedRouteRoute,
 } as any)
 
-const AuthenticatedHomeRoute = AuthenticatedHomeImport.update({
-  id: '/home',
-  path: '/home',
+const AuthenticatedPersonasRoute = AuthenticatedPersonasImport.update({
+  id: '/personas',
+  path: '/personas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/home': {
-      id: '/_authenticated/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof AuthenticatedHomeImport
+    '/_authenticated/personas': {
+      id: '/_authenticated/personas'
+      path: '/personas'
+      fullPath: '/personas'
+      preLoaderRoute: typeof AuthenticatedPersonasImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_unauthenticated/': {
@@ -78,11 +78,11 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedPersonasRoute: typeof AuthenticatedPersonasRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedPersonasRoute: AuthenticatedPersonasRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -101,13 +101,13 @@ const UnauthenticatedRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof UnauthenticatedRouteRouteWithChildren
-  '/home': typeof AuthenticatedHomeRoute
+  '/personas': typeof AuthenticatedPersonasRoute
   '/': typeof UnauthenticatedIndexRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteRouteWithChildren
-  '/home': typeof AuthenticatedHomeRoute
+  '/personas': typeof AuthenticatedPersonasRoute
   '/': typeof UnauthenticatedIndexRoute
 }
 
@@ -115,20 +115,20 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
-  '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/personas': typeof AuthenticatedPersonasRoute
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/home' | '/'
+  fullPaths: '' | '/personas' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/home' | '/'
+  to: '' | '/personas' | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_unauthenticated'
-    | '/_authenticated/home'
+    | '/_authenticated/personas'
     | '/_unauthenticated/'
   fileRoutesById: FileRoutesById
 }
@@ -160,7 +160,7 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
-        "/_authenticated/home"
+        "/_authenticated/personas"
       ]
     },
     "/_unauthenticated": {
@@ -169,8 +169,8 @@ export const routeTree = rootRoute
         "/_unauthenticated/"
       ]
     },
-    "/_authenticated/home": {
-      "filePath": "_authenticated/home.tsx",
+    "/_authenticated/personas": {
+      "filePath": "_authenticated/personas.tsx",
       "parent": "/_authenticated"
     },
     "/_unauthenticated/": {

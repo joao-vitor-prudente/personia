@@ -8,3 +8,9 @@ const authConfig = {
 };
 
 export default authConfig;
+
+declare module "convex/server" {
+  interface UserIdentity {
+    organizations: Record<string, "admin" | "user">
+  }
+}

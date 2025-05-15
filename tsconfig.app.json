@@ -29,5 +29,5 @@
       "@api": ["./convex/_generated/api"]
     }
   },
-  "include": ["src", "convex"]
+  "include": ["src"]
 }
