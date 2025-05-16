@@ -81,7 +81,7 @@ function RouteComponent() {
         <Button onClick={() => void form.handleSubmit()}>Criar</Button>
       </header>
       <form.AppForm>
-        <form className="grid grid-cols-[32rem_auto] gap-x-48 gap-y-24">
+        <form className="grid grid-cols-[1fr_2fr] gap-x-48 gap-y-24">
           <fieldset className="space-y-4 row-span-2">
             <form.AppField name="name">
               {(field) => (

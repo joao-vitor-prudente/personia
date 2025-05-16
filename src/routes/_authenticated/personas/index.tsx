@@ -53,82 +53,84 @@ function PersonaCard(props: {
   persona: (typeof api.personas.listPersonas._returnType)[number];
 }) {
   return (
-    <Card className="max-w-lg">
-      <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
-        <User />
-        <div>
-          <CardTitle>{props.persona.name}</CardTitle>
-          <CardDescription>{props.persona.nickname}</CardDescription>
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <EllipsisVertical />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Pencil />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Copy />
-              Copy
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Trash />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </CardHeader>
-      <CardContent>
-        <ul className="space-y-2">
-          <li>
-            <TypographyBlockquote>{props.persona.quote}</TypographyBlockquote>
-          </li>
-          <li className="flex gap-1 items-center">
-            <Cake />
-            <TypographySmall className="space-x-1">
-              <span>{props.persona.demographicProfile.age}</span>
-              <span>years</span>
-            </TypographySmall>
-          </li>
-          <li className="flex gap-1 items-center">
-            {props.persona.demographicProfile.gender === "male" ? (
-              <Mars />
-            ) : (
-              <Venus />
-            )}
-            <TypographySmall>
-              {props.persona.demographicProfile.gender === "male"
-                ? "Male"
-                : "Female"}
-            </TypographySmall>
-          </li>
-          <li className="flex gap-1 items-center">
-            <MapPin />
-            <TypographySmall className="space-x-1">
-              <span>{props.persona.demographicProfile.country}</span>
-              <span>-</span>
-              <span>{props.persona.demographicProfile.state}</span>
-            </TypographySmall>
-          </li>
-          <li className="flex gap-1 items-center">
-            <BriefcaseBusiness />
-            <TypographySmall>
-              {props.persona.demographicProfile.occupation}
-            </TypographySmall>
-          </li>
-        </ul>
-      </CardContent>
-      <CardFooter>
-        <CardAction className="w-full">
-          <Button className="w-full">
-            <MessageCircleMore />
-            Chat
-          </Button>
-        </CardAction>
-      </CardFooter>
-    </Card>
+    <Link params={{ id: props.persona._id }} to="/personas/$id">
+      <Card className="max-w-lg">
+        <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
+          <User />
+          <div>
+            <CardTitle>{props.persona.name}</CardTitle>
+            <CardDescription>{props.persona.nickname}</CardDescription>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <EllipsisVertical />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+                <Pencil />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Copy />
+                Copy
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Trash />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            <li>
+              <TypographyBlockquote>{props.persona.quote}</TypographyBlockquote>
+            </li>
+            <li className="flex gap-1 items-center">
+              <Cake />
+              <TypographySmall className="space-x-1">
+                <span>{props.persona.demographicProfile.age}</span>
+                <span>years</span>
+              </TypographySmall>
+            </li>
+            <li className="flex gap-1 items-center">
+              {props.persona.demographicProfile.gender === "male" ? (
+                <Mars />
+              ) : (
+                <Venus />
+              )}
+              <TypographySmall>
+                {props.persona.demographicProfile.gender === "male"
+                  ? "Male"
+                  : "Female"}
+              </TypographySmall>
+            </li>
+            <li className="flex gap-1 items-center">
+              <MapPin />
+              <TypographySmall className="space-x-1">
+                <span>{props.persona.demographicProfile.country}</span>
+                <span>-</span>
+                <span>{props.persona.demographicProfile.state}</span>
+              </TypographySmall>
+            </li>
+            <li className="flex gap-1 items-center">
+              <BriefcaseBusiness />
+              <TypographySmall>
+                {props.persona.demographicProfile.occupation}
+              </TypographySmall>
+            </li>
+          </ul>
+        </CardContent>
+        <CardFooter>
+          <CardAction className="w-full">
+            <Button className="w-full">
+              <MessageCircleMore />
+              Chat
+            </Button>
+          </CardAction>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }
 

@@ -54,6 +54,17 @@ export const listPersonas = query({
   },
 });
 
+export const getPersona = query({
+  args: { id: v.id("personas") },
+  handler: async (ctx, args) => {
+    const identity = await getIdentityOrThrow(ctx);
+    const persona = await ctx.db.get(args.id);
+    if (!persona) throw new Error("Persona not found");
+    if (persona.organizationId === identity.organization.id) return persona;
+    throw new Error("User is not authorized to view this persona");
+  },
+});
+
 async function getIdentityOrThrow(ctx: ActionCtx | MutationCtx | QueryCtx) {
   const identity = await ctx.auth.getUserIdentity();
   if (identity === null) throw new Error("User is not signed in");
