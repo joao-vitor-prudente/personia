@@ -15,8 +15,9 @@ import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated/r
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as UnauthenticatedIndexImport } from './routes/_unauthenticated/index'
 import { Route as AuthenticatedProjectsImport } from './routes/_authenticated/projects'
-import { Route as AuthenticatedPersonasImport } from './routes/_authenticated/personas'
-import { Route as AuthenticatedCreatePersonaImport } from './routes/_authenticated/create-persona'
+import { Route as AuthenticatedPersonasIndexImport } from './routes/_authenticated/personas/index'
+import { Route as AuthenticatedPersonasCreateImport } from './routes/_authenticated/personas/create'
+import { Route as AuthenticatedPersonasIdImport } from './routes/_authenticated/personas/$id'
 
 // Create/Update Routes
 
@@ -42,19 +43,26 @@ const AuthenticatedProjectsRoute = AuthenticatedProjectsImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
-const AuthenticatedPersonasRoute = AuthenticatedPersonasImport.update({
-  id: '/personas',
-  path: '/personas',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-
-const AuthenticatedCreatePersonaRoute = AuthenticatedCreatePersonaImport.update(
+const AuthenticatedPersonasIndexRoute = AuthenticatedPersonasIndexImport.update(
   {
-    id: '/create-persona',
-    path: '/create-persona',
+    id: '/personas/',
+    path: '/personas/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any,
 )
+
+const AuthenticatedPersonasCreateRoute =
+  AuthenticatedPersonasCreateImport.update({
+    id: '/personas/create',
+    path: '/personas/create',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedPersonasIdRoute = AuthenticatedPersonasIdImport.update({
+  id: '/personas/$id',
+  path: '/personas/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -74,20 +82,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/create-persona': {
-      id: '/_authenticated/create-persona'
-      path: '/create-persona'
-      fullPath: '/create-persona'
-      preLoaderRoute: typeof AuthenticatedCreatePersonaImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/personas': {
-      id: '/_authenticated/personas'
-      path: '/personas'
-      fullPath: '/personas'
-      preLoaderRoute: typeof AuthenticatedPersonasImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
     '/_authenticated/projects': {
       id: '/_authenticated/projects'
       path: '/projects'
@@ -102,21 +96,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedIndexImport
       parentRoute: typeof UnauthenticatedRouteImport
     }
+    '/_authenticated/personas/$id': {
+      id: '/_authenticated/personas/$id'
+      path: '/personas/$id'
+      fullPath: '/personas/$id'
+      preLoaderRoute: typeof AuthenticatedPersonasIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/personas/create': {
+      id: '/_authenticated/personas/create'
+      path: '/personas/create'
+      fullPath: '/personas/create'
+      preLoaderRoute: typeof AuthenticatedPersonasCreateImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/personas/': {
+      id: '/_authenticated/personas/'
+      path: '/personas'
+      fullPath: '/personas'
+      preLoaderRoute: typeof AuthenticatedPersonasIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
   }
 }
 
 // Create and export the route tree
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedCreatePersonaRoute: typeof AuthenticatedCreatePersonaRoute
-  AuthenticatedPersonasRoute: typeof AuthenticatedPersonasRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
+  AuthenticatedPersonasIdRoute: typeof AuthenticatedPersonasIdRoute
+  AuthenticatedPersonasCreateRoute: typeof AuthenticatedPersonasCreateRoute
+  AuthenticatedPersonasIndexRoute: typeof AuthenticatedPersonasIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedCreatePersonaRoute: AuthenticatedCreatePersonaRoute,
-  AuthenticatedPersonasRoute: AuthenticatedPersonasRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
+  AuthenticatedPersonasIdRoute: AuthenticatedPersonasIdRoute,
+  AuthenticatedPersonasCreateRoute: AuthenticatedPersonasCreateRoute,
+  AuthenticatedPersonasIndexRoute: AuthenticatedPersonasIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -135,43 +152,59 @@ const UnauthenticatedRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof UnauthenticatedRouteRouteWithChildren
-  '/create-persona': typeof AuthenticatedCreatePersonaRoute
-  '/personas': typeof AuthenticatedPersonasRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/': typeof UnauthenticatedIndexRoute
+  '/personas/$id': typeof AuthenticatedPersonasIdRoute
+  '/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/personas': typeof AuthenticatedPersonasIndexRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteRouteWithChildren
-  '/create-persona': typeof AuthenticatedCreatePersonaRoute
-  '/personas': typeof AuthenticatedPersonasRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/': typeof UnauthenticatedIndexRoute
+  '/personas/$id': typeof AuthenticatedPersonasIdRoute
+  '/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/personas': typeof AuthenticatedPersonasIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
-  '/_authenticated/create-persona': typeof AuthenticatedCreatePersonaRoute
-  '/_authenticated/personas': typeof AuthenticatedPersonasRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
+  '/_authenticated/personas/$id': typeof AuthenticatedPersonasIdRoute
+  '/_authenticated/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/_authenticated/personas/': typeof AuthenticatedPersonasIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/create-persona' | '/personas' | '/projects' | '/'
+  fullPaths:
+    | ''
+    | '/projects'
+    | '/'
+    | '/personas/$id'
+    | '/personas/create'
+    | '/personas'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/create-persona' | '/personas' | '/projects' | '/'
+  to:
+    | ''
+    | '/projects'
+    | '/'
+    | '/personas/$id'
+    | '/personas/create'
+    | '/personas'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_unauthenticated'
-    | '/_authenticated/create-persona'
-    | '/_authenticated/personas'
     | '/_authenticated/projects'
     | '/_unauthenticated/'
+    | '/_authenticated/personas/$id'
+    | '/_authenticated/personas/create'
+    | '/_authenticated/personas/'
   fileRoutesById: FileRoutesById
 }
 
@@ -202,9 +235,10 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
-        "/_authenticated/create-persona",
-        "/_authenticated/personas",
-        "/_authenticated/projects"
+        "/_authenticated/projects",
+        "/_authenticated/personas/$id",
+        "/_authenticated/personas/create",
+        "/_authenticated/personas/"
       ]
     },
     "/_unauthenticated": {
@@ -213,14 +247,6 @@ export const routeTree = rootRoute
         "/_unauthenticated/"
       ]
     },
-    "/_authenticated/create-persona": {
-      "filePath": "_authenticated/create-persona.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/personas": {
-      "filePath": "_authenticated/personas.tsx",
-      "parent": "/_authenticated"
-    },
     "/_authenticated/projects": {
       "filePath": "_authenticated/projects.tsx",
       "parent": "/_authenticated"
@@ -228,6 +254,18 @@ export const routeTree = rootRoute
     "/_unauthenticated/": {
       "filePath": "_unauthenticated/index.tsx",
       "parent": "/_unauthenticated"
+    },
+    "/_authenticated/personas/$id": {
+      "filePath": "_authenticated/personas/$id.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/personas/create": {
+      "filePath": "_authenticated/personas/create.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/personas/": {
+      "filePath": "_authenticated/personas/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }

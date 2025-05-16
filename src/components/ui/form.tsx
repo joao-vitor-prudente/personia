@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
+import { Textarea as _Textarea } from "@/components/ui/textarea.tsx";
 import { cn } from "@/lib/utils";
 
 const {
@@ -32,6 +33,7 @@ const { useAppForm, withForm } = createFormHook({
     FormMessage,
     Input,
     Select,
+    Textarea,
   },
   fieldContext,
   formComponents: {},
@@ -159,7 +161,8 @@ function Input(props: React.ComponentProps<typeof _Input>) {
       name={field.name}
       onBlur={field.handleBlur}
       onChange={(e) => {
-        field.handleChange(e.target.value);
+        if (props.type === "number") field.handleChange(e.target.valueAsNumber);
+        else field.handleChange(e.target.value);
       }}
       value={field.state.value as string}
       {...props}
@@ -183,6 +186,21 @@ function Select({
       </SelectTrigger>
       <SelectContent>{children}</SelectContent>
     </_Select>
+  );
+}
+
+function Textarea(props: React.ComponentProps<typeof _Textarea>) {
+  const field = _useFieldContext();
+  return (
+    <_Textarea
+      name={field.name}
+      onBlur={field.handleBlur}
+      onChange={(e) => {
+        field.handleChange(e.target.value);
+      }}
+      value={field.state.value as string}
+      {...props}
+    />
   );
 }
 

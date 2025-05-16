@@ -62,6 +62,18 @@ export function TypographyH4({ className, ...props }: ComponentProps<"h4">) {
   );
 }
 
+export function TypographyH5({ className, ...props }: ComponentProps<"h4">) {
+  return (
+    <h5
+      className={cn(
+        "scroll-m-20 text-lg font-semibold tracking-tight",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 export function TypographyLarge({ className, ...props }: ComponentProps<"p">) {
   return <p className={cn("text-lg font-semibold", className)} {...props} />;
 }

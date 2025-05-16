@@ -10,6 +10,7 @@ import {
 
 export const createPersona = mutation({
   args: {
+    background: v.string(),
     demographicProfile: v.object({
       age: v.number(),
       country: v.string(),

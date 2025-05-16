@@ -28,7 +28,7 @@ function RouteComponent() {
 
   return (
     <>
-      <header className="flex items-center gap-8 px-8 py-4 border-b">
+      <header className="grid grid-cols-[auto_1fr_auto_auto] gap-8 px-8 py-4 border-b">
         <TypographyH3>Personia</TypographyH3>
         <NavigationMenu>
           <NavigationMenuList>
@@ -50,7 +50,6 @@ function RouteComponent() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        <div className="m-auto" />
         <UserButton />
         <ModeToggle />
       </header>

@@ -45,7 +45,7 @@ import {
   TypographySmall,
 } from "@/components/ui/typography";
 
-export const Route = createFileRoute("/_authenticated/personas")({
+export const Route = createFileRoute("/_authenticated/personas/")({
   component: RouteComponent,
 });
 
@@ -53,7 +53,7 @@ function PersonaCard(props: {
   persona: (typeof api.personas.listPersonas._returnType)[number];
 }) {
   return (
-    <Card>
+    <Card className="max-w-lg">
       <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
         <User />
         <div>
@@ -155,7 +155,7 @@ function RouteComponent() {
       <header className="flex items-center justify-between">
         <TypographyH4>Personas</TypographyH4>
         <Button asChild>
-          <Link to="/create-persona">Create Persona</Link>
+          <Link to="/personas/create">Create Persona</Link>
         </Button>
       </header>
       <form.AppForm>

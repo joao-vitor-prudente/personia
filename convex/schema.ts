@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
   personas: defineTable({
+    background: v.string(),
     demographicProfile: v.object({
       age: v.number(),
       country: v.string(),
