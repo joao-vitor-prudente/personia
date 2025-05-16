@@ -14,7 +14,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated/route'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as UnauthenticatedIndexImport } from './routes/_unauthenticated/index'
+import { Route as AuthenticatedProjectsImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedPersonasImport } from './routes/_authenticated/personas'
+import { Route as AuthenticatedCreatePersonaImport } from './routes/_authenticated/create-persona'
 
 // Create/Update Routes
 
@@ -34,11 +36,25 @@ const UnauthenticatedIndexRoute = UnauthenticatedIndexImport.update({
   getParentRoute: () => UnauthenticatedRouteRoute,
 } as any)
 
+const AuthenticatedProjectsRoute = AuthenticatedProjectsImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+
 const AuthenticatedPersonasRoute = AuthenticatedPersonasImport.update({
   id: '/personas',
   path: '/personas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+
+const AuthenticatedCreatePersonaRoute = AuthenticatedCreatePersonaImport.update(
+  {
+    id: '/create-persona',
+    path: '/create-persona',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -58,11 +74,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRoute
     }
+    '/_authenticated/create-persona': {
+      id: '/_authenticated/create-persona'
+      path: '/create-persona'
+      fullPath: '/create-persona'
+      preLoaderRoute: typeof AuthenticatedCreatePersonaImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/personas': {
       id: '/_authenticated/personas'
       path: '/personas'
       fullPath: '/personas'
       preLoaderRoute: typeof AuthenticatedPersonasImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects': {
+      id: '/_authenticated/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_unauthenticated/': {
@@ -78,11 +108,15 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCreatePersonaRoute: typeof AuthenticatedCreatePersonaRoute
   AuthenticatedPersonasRoute: typeof AuthenticatedPersonasRoute
+  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCreatePersonaRoute: AuthenticatedCreatePersonaRoute,
   AuthenticatedPersonasRoute: AuthenticatedPersonasRoute,
+  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -101,13 +135,17 @@ const UnauthenticatedRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof UnauthenticatedRouteRouteWithChildren
+  '/create-persona': typeof AuthenticatedCreatePersonaRoute
   '/personas': typeof AuthenticatedPersonasRoute
+  '/projects': typeof AuthenticatedProjectsRoute
   '/': typeof UnauthenticatedIndexRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteRouteWithChildren
+  '/create-persona': typeof AuthenticatedCreatePersonaRoute
   '/personas': typeof AuthenticatedPersonasRoute
+  '/projects': typeof AuthenticatedProjectsRoute
   '/': typeof UnauthenticatedIndexRoute
 }
 
@@ -115,20 +153,24 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
+  '/_authenticated/create-persona': typeof AuthenticatedCreatePersonaRoute
   '/_authenticated/personas': typeof AuthenticatedPersonasRoute
+  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/personas' | '/'
+  fullPaths: '' | '/create-persona' | '/personas' | '/projects' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/personas' | '/'
+  to: '' | '/create-persona' | '/personas' | '/projects' | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_unauthenticated'
+    | '/_authenticated/create-persona'
     | '/_authenticated/personas'
+    | '/_authenticated/projects'
     | '/_unauthenticated/'
   fileRoutesById: FileRoutesById
 }
@@ -160,7 +202,9 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
-        "/_authenticated/personas"
+        "/_authenticated/create-persona",
+        "/_authenticated/personas",
+        "/_authenticated/projects"
       ]
     },
     "/_unauthenticated": {
@@ -169,8 +213,16 @@ export const routeTree = rootRoute
         "/_unauthenticated/"
       ]
     },
+    "/_authenticated/create-persona": {
+      "filePath": "_authenticated/create-persona.tsx",
+      "parent": "/_authenticated"
+    },
     "/_authenticated/personas": {
       "filePath": "_authenticated/personas.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/projects": {
+      "filePath": "_authenticated/projects.tsx",
       "parent": "/_authenticated"
     },
     "/_unauthenticated/": {

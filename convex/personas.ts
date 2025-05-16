@@ -31,12 +31,25 @@ export const createPersona = mutation({
 });
 
 export const listPersonas = query({
-  handler: async (ctx) => {
+  args: {
+    search: v.string(),
+    sorting: v.union(v.literal("asc"), v.literal("desc")),
+  },
+  handler: async (ctx, args) => {
     const identity = await getIdentityOrThrow(ctx);
-    return await ctx.db
+    const personas = await ctx.db
       .query("personas")
-      .filter((q) => q.eq(q.field("organizationId"), identity.organization.id))
+      .withIndex("organizationId", (q) =>
+        q.eq("organizationId", identity.organization.id),
+      )
+      .order(args.sorting)
       .collect();
+
+    return personas.filter(
+      (p) =>
+        p.name.toLowerCase().includes(args.search.toLowerCase()) ||
+        p.nickname.toLowerCase().includes(args.search.toLowerCase()),
+    );
   },
 });
 

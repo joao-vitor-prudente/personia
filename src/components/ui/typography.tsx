@@ -2,6 +2,18 @@ import { type ComponentProps } from "react";
 
 import { cn } from "@/lib/utils";
 
+export function TypographyBlockquote({
+  className,
+  ...props
+}: ComponentProps<"blockquote">) {
+  return (
+    <blockquote
+      className={cn("border-l-2 pl-6 italic", className)}
+      {...props}
+    />
+  );
+}
+
 export function TypographyH1({ className, ...props }: ComponentProps<"h1">) {
   return (
     <h1

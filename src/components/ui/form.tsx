@@ -6,7 +6,14 @@ import {
 } from "@tanstack/react-form";
 import * as React from "react";
 
+import { Input as _Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label";
+import {
+  Select as _Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select.tsx";
 import { cn } from "@/lib/utils";
 
 const {
@@ -23,6 +30,8 @@ const { useAppForm, withForm } = createFormHook({
     FormItem,
     FormLabel,
     FormMessage,
+    Input,
+    Select,
   },
   fieldContext,
   formComponents: {},
@@ -140,6 +149,40 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
     >
       {body}
     </p>
+  );
+}
+
+function Input(props: React.ComponentProps<typeof _Input>) {
+  const field = _useFieldContext();
+  return (
+    <_Input
+      name={field.name}
+      onBlur={field.handleBlur}
+      onChange={(e) => {
+        field.handleChange(e.target.value);
+      }}
+      value={field.state.value as string}
+      {...props}
+    />
+  );
+}
+
+function Select({
+  children,
+  ...props
+}: React.ComponentProps<typeof SelectTrigger>) {
+  const field = _useFieldContext();
+  return (
+    <_Select
+      name={field.name}
+      onValueChange={field.handleChange}
+      value={field.state.value as string}
+    >
+      <SelectTrigger onBlur={field.handleBlur} {...props}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>{children}</SelectContent>
+    </_Select>
   );
 }
 

@@ -14,5 +14,5 @@ export default defineSchema({
     nickname: v.string(),
     organizationId: v.string(),
     quote: v.string(),
-  }),
+  }).index("organizationId", ["organizationId"]),
 });
