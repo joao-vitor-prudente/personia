@@ -87,7 +87,7 @@ function RouteComponent() {
                 <field.FormItem>
                   <field.FormLabel htmlFor={nameFieldId}>Name</field.FormLabel>
                   <field.FormControl>
-                    <field.Input id={nameFieldId} />
+                    <field.Input autoComplete="off" id={nameFieldId} />
                   </field.FormControl>
                   <field.FormDescription>
                     This is your persona's name.
