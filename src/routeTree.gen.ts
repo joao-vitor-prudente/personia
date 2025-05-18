@@ -14,8 +14,10 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated/route'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as UnauthenticatedIndexImport } from './routes/_unauthenticated/index'
-import { Route as AuthenticatedProjectsImport } from './routes/_authenticated/projects'
+import { Route as AuthenticatedProjectsIndexImport } from './routes/_authenticated/projects/index'
 import { Route as AuthenticatedPersonasIndexImport } from './routes/_authenticated/personas/index'
+import { Route as AuthenticatedProjectsCreateImport } from './routes/_authenticated/projects/create'
+import { Route as AuthenticatedProjectsIdImport } from './routes/_authenticated/projects/$id'
 import { Route as AuthenticatedPersonasCreateImport } from './routes/_authenticated/personas/create'
 import { Route as AuthenticatedPersonasIdImport } from './routes/_authenticated/personas/$id'
 
@@ -37,11 +39,13 @@ const UnauthenticatedIndexRoute = UnauthenticatedIndexImport.update({
   getParentRoute: () => UnauthenticatedRouteRoute,
 } as any)
 
-const AuthenticatedProjectsRoute = AuthenticatedProjectsImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedProjectsIndexRoute = AuthenticatedProjectsIndexImport.update(
+  {
+    id: '/projects/',
+    path: '/projects/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
 
 const AuthenticatedPersonasIndexRoute = AuthenticatedPersonasIndexImport.update(
   {
@@ -50,6 +54,19 @@ const AuthenticatedPersonasIndexRoute = AuthenticatedPersonasIndexImport.update(
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any,
 )
+
+const AuthenticatedProjectsCreateRoute =
+  AuthenticatedProjectsCreateImport.update({
+    id: '/projects/create',
+    path: '/projects/create',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedProjectsIdRoute = AuthenticatedProjectsIdImport.update({
+  id: '/projects/$id',
+  path: '/projects/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 const AuthenticatedPersonasCreateRoute =
   AuthenticatedPersonasCreateImport.update({
@@ -82,13 +99,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/projects': {
-      id: '/_authenticated/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof AuthenticatedProjectsImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
     '/_unauthenticated/': {
       id: '/_unauthenticated/'
       path: '/'
@@ -110,11 +120,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonasCreateImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/projects/$id': {
+      id: '/_authenticated/projects/$id'
+      path: '/projects/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof AuthenticatedProjectsIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/create': {
+      id: '/_authenticated/projects/create'
+      path: '/projects/create'
+      fullPath: '/projects/create'
+      preLoaderRoute: typeof AuthenticatedProjectsCreateImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/personas/': {
       id: '/_authenticated/personas/'
       path: '/personas'
       fullPath: '/personas'
       preLoaderRoute: typeof AuthenticatedPersonasIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/': {
+      id: '/_authenticated/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
   }
@@ -123,17 +154,21 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedPersonasIdRoute: typeof AuthenticatedPersonasIdRoute
   AuthenticatedPersonasCreateRoute: typeof AuthenticatedPersonasCreateRoute
+  AuthenticatedProjectsIdRoute: typeof AuthenticatedProjectsIdRoute
+  AuthenticatedProjectsCreateRoute: typeof AuthenticatedProjectsCreateRoute
   AuthenticatedPersonasIndexRoute: typeof AuthenticatedPersonasIndexRoute
+  AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedPersonasIdRoute: AuthenticatedPersonasIdRoute,
   AuthenticatedPersonasCreateRoute: AuthenticatedPersonasCreateRoute,
+  AuthenticatedProjectsIdRoute: AuthenticatedProjectsIdRoute,
+  AuthenticatedProjectsCreateRoute: AuthenticatedProjectsCreateRoute,
   AuthenticatedPersonasIndexRoute: AuthenticatedPersonasIndexRoute,
+  AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -152,59 +187,71 @@ const UnauthenticatedRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof UnauthenticatedRouteRouteWithChildren
-  '/projects': typeof AuthenticatedProjectsRoute
   '/': typeof UnauthenticatedIndexRoute
   '/personas/$id': typeof AuthenticatedPersonasIdRoute
   '/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/projects/create': typeof AuthenticatedProjectsCreateRoute
   '/personas': typeof AuthenticatedPersonasIndexRoute
+  '/projects': typeof AuthenticatedProjectsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteRouteWithChildren
-  '/projects': typeof AuthenticatedProjectsRoute
   '/': typeof UnauthenticatedIndexRoute
   '/personas/$id': typeof AuthenticatedPersonasIdRoute
   '/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/projects/create': typeof AuthenticatedProjectsCreateRoute
   '/personas': typeof AuthenticatedPersonasIndexRoute
+  '/projects': typeof AuthenticatedProjectsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
-  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
   '/_authenticated/personas/$id': typeof AuthenticatedPersonasIdRoute
   '/_authenticated/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/_authenticated/projects/create': typeof AuthenticatedProjectsCreateRoute
   '/_authenticated/personas/': typeof AuthenticatedPersonasIndexRoute
+  '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
-    | '/projects'
     | '/'
     | '/personas/$id'
     | '/personas/create'
+    | '/projects/$id'
+    | '/projects/create'
     | '/personas'
+    | '/projects'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
-    | '/projects'
     | '/'
     | '/personas/$id'
     | '/personas/create'
+    | '/projects/$id'
+    | '/projects/create'
     | '/personas'
+    | '/projects'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_unauthenticated'
-    | '/_authenticated/projects'
     | '/_unauthenticated/'
     | '/_authenticated/personas/$id'
     | '/_authenticated/personas/create'
+    | '/_authenticated/projects/$id'
+    | '/_authenticated/projects/create'
     | '/_authenticated/personas/'
+    | '/_authenticated/projects/'
   fileRoutesById: FileRoutesById
 }
 
@@ -235,10 +282,12 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
-        "/_authenticated/projects",
         "/_authenticated/personas/$id",
         "/_authenticated/personas/create",
-        "/_authenticated/personas/"
+        "/_authenticated/projects/$id",
+        "/_authenticated/projects/create",
+        "/_authenticated/personas/",
+        "/_authenticated/projects/"
       ]
     },
     "/_unauthenticated": {
@@ -246,10 +295,6 @@ export const routeTree = rootRoute
       "children": [
         "/_unauthenticated/"
       ]
-    },
-    "/_authenticated/projects": {
-      "filePath": "_authenticated/projects.tsx",
-      "parent": "/_authenticated"
     },
     "/_unauthenticated/": {
       "filePath": "_unauthenticated/index.tsx",
@@ -263,8 +308,20 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/personas/create.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/projects/$id": {
+      "filePath": "_authenticated/projects/$id.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/projects/create": {
+      "filePath": "_authenticated/projects/create.tsx",
+      "parent": "/_authenticated"
+    },
     "/_authenticated/personas/": {
       "filePath": "_authenticated/personas/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/projects/": {
+      "filePath": "_authenticated/projects/index.tsx",
       "parent": "/_authenticated"
     }
   }
