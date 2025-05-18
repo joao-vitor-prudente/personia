@@ -16,4 +16,12 @@ export default defineSchema({
     organizationId: v.string(),
     quote: v.string(),
   }).index("organizationId", ["organizationId"]),
+  projects: defineTable({
+    category: v.string(),
+    name: v.string(),
+    objective: v.string(),
+    organizationId: v.string(),
+    situation: v.string(),
+    targetAudience: v.string(),
+  }).index("organizationId", ["organizationId"]),
 });

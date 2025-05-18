@@ -1,12 +1,7 @@
 import { v } from "convex/values";
 
-import {
-  type ActionCtx,
-  mutation,
-  type MutationCtx,
-  query,
-  type QueryCtx,
-} from "./_generated/server";
+import { mutation, query } from "./_generated/server";
+import { getIdentityOrThrow } from "./helpers";
 
 export const createPersona = mutation({
   args: {
@@ -64,10 +59,3 @@ export const getPersona = query({
     throw new Error("User is not authorized to view this persona");
   },
 });
-
-async function getIdentityOrThrow(ctx: ActionCtx | MutationCtx | QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (identity === null) throw new Error("User is not signed in");
-  const [id, role] = Object.entries(identity.organizations)[0];
-  return { ...identity, organization: { id, role } };
-}

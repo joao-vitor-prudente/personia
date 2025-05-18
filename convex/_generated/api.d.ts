@@ -13,7 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as helpers from "../helpers.js";
 import type * as personas from "../personas.js";
+import type * as projects from "../projects.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -24,7 +26,9 @@ import type * as personas from "../personas.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  helpers: typeof helpers;
   personas: typeof personas;
+  projects: typeof projects;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
