@@ -75,9 +75,9 @@ function RouteComponent() {
       <header className="w-full grid grid-cols-[1fr_auto_auto] gap-4">
         <TypographyH4>Create Persona</TypographyH4>
         <Button asChild variant="secondary">
-          <Link to="..">Voltar</Link>
+          <Link to="..">Return</Link>
         </Button>
-        <Button onClick={() => void form.handleSubmit()}>Criar</Button>
+        <Button onClick={() => void form.handleSubmit()}>Create</Button>
       </header>
       <form.AppForm>
         <form className="grid grid-cols-[1fr_2fr] gap-x-48 gap-y-24">
