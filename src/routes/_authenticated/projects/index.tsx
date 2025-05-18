@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button.tsx";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
@@ -50,7 +51,10 @@ function ProjectCard(props: {
       <Card className="max-w-lg">
         <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
           <User />
-          <CardTitle>{props.project.name}</CardTitle>
+          <div>
+            <CardTitle>{props.project.name}</CardTitle>
+            <CardDescription>{props.project.category}</CardDescription>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <EllipsisVertical />
