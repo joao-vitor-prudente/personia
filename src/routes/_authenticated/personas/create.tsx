@@ -43,18 +43,17 @@ function RouteComponent() {
   });
   const form = useAppForm({
     defaultValues: {
-      background: "Racism, sexism and homophobia ahh person",
+      background: "",
       demographicProfile: {
-        age: 22,
-        country: "Brazil",
+        age: 0,
+        country: "",
         gender: "male",
-        occupation: "Software Engineer",
-        state: "DF",
+        occupation: "",
+        state: "",
       },
-      name: "João Vitor",
-      nickname: "Rubão",
-      quote:
-        "I am loud and obnoxious, I like music that rhymes. I'm a fraction of the population, but commit half the crimes. What am I?",
+      name: "",
+      nickname: "",
+      quote: "",
     } as z.infer<typeof formSchema>,
     onSubmit: async ({ value }) => {
       await mutation.mutateAsync(value);
