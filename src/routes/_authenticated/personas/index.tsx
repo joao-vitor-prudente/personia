@@ -1,7 +1,7 @@
-import { convexQuery } from "@convex-dev/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
 import { useStore } from "@tanstack/react-form";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BriefcaseBusiness,
@@ -17,6 +17,7 @@ import {
   Venus,
 } from "lucide-react";
 import { useId } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog.tsx";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,6 +63,11 @@ export const Route = createFileRoute("/_authenticated/personas/")({
 function PersonaCard(props: {
   persona: typeof api.personas.getPersona._returnType;
 }) {
+  const deletePersona = useMutation({
+    mutationFn: useConvexMutation(api.personas.deletePersona),
+    onError: (error) => toast.error(error.message),
+  });
+
   return (
     <Link params={{ id: props.persona._id }} to="/personas/$id">
       <Card className="max-w-lg">
@@ -84,10 +100,39 @@ function PersonaCard(props: {
                   Copy
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Trash />
-                Delete
-              </DropdownMenuItem>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem>
+                    <Trash />
+                    Delete
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Delete Persona</DialogTitle>
+                    <DialogDescription>
+                      <span>Are you sure you want to delete </span>
+                      <span>{props.persona.name}</span>
+                      <span>?</span>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        onClick={() => {
+                          deletePersona.mutate({ id: props.persona._id });
+                        }}
+                        variant="destructive"
+                      >
+                        Confirm
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </DropdownMenuContent>
           </DropdownMenu>
         </CardHeader>

@@ -85,3 +85,15 @@ export const editPersona = mutation({
     await ctx.db.patch(id, args);
   },
 });
+
+export const deletePersona = mutation({
+  args: { id: v.id("personas") },
+  handler: async (ctx, args) => {
+    const identity = await getIdentityOrThrow(ctx);
+    const persona = await ctx.db.get(args.id);
+    if (!persona) throw new Error("Persona not found");
+    if (persona.organizationId !== identity.organization.id)
+      throw new Error("User is not authorized to delete this persona");
+    await ctx.db.delete(args.id);
+  },
+});

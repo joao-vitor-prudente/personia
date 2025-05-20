@@ -1,7 +1,7 @@
-import { convexQuery } from "@convex-dev/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
 import { type Id } from "@server/dataModel";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BriefcaseBusiness,
@@ -14,8 +14,19 @@ import {
   Trash,
   Venus,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button.tsx";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog.tsx";
 import {
   TypographyBlockquote,
   TypographyH4,
@@ -29,10 +40,17 @@ export const Route = createFileRoute("/_authenticated/personas/$id")({
 });
 
 function RouteComponent() {
-  const personaId = Route.useParams().id;
+  const personaId = Route.useParams().id as Id<"personas">;
+  const navigate = Route.useNavigate();
   const persona = useQuery(
-    convexQuery(api.personas.getPersona, { id: personaId as Id<"personas"> }),
+    convexQuery(api.personas.getPersona, { id: personaId }),
   );
+
+  const deletePersona = useMutation({
+    mutationFn: useConvexMutation(api.personas.deletePersona),
+    onError: (error) => toast.error(error.message),
+    onSuccess: () => navigate({ to: "/personas" }),
+  });
 
   if (!persona.data) return null;
 
@@ -46,10 +64,39 @@ function RouteComponent() {
         <nav>
           <ul className="flex gap-2">
             <li>
-              <Button variant="outline">
-                <Trash />
-                Delete
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Trash />
+                    Delete
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Delete Persona</DialogTitle>
+                    <DialogDescription>
+                      <span>Are you sure you want to delete </span>
+                      <span>{persona.data.name}</span>
+                      <span>?</span>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        onClick={() => {
+                          deletePersona.mutate({ id: personaId });
+                        }}
+                        variant="destructive"
+                      >
+                        Confirm
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </li>
             <li>
               <Button asChild variant="outline">
