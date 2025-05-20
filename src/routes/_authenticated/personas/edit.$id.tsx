@@ -16,7 +16,7 @@ import {
   TypographyMuted,
 } from "@/components/ui/typography.tsx";
 
-export const Route = createFileRoute("/_authenticated/personas/create")({
+export const Route = createFileRoute("/_authenticated/personas/edit/$id")({
   component: RouteComponent,
   validateSearch: z.object({ from: z.string().optional() }),
 });
@@ -36,11 +36,11 @@ const formSchema = z.object({
 });
 
 function RouteComponent() {
-  const from = Route.useSearch().from as Id<"personas">;
+  const from = Route.useSearch().from;
   const fromPersona = useQuery({
-    ...convexQuery(api.personas.getPersona, { id: from }),
+    ...convexQuery(api.personas.getPersona, { id: from as Id<"personas"> }),
     enabled: !!from,
-    select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
+    select: ({ organizationId: _, ...data }) => data,
   });
 
   const navigate = Route.useNavigate();
