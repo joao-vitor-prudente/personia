@@ -17,12 +17,8 @@ import {
 import { Textarea as _Textarea } from "@/components/ui/textarea.tsx";
 import { cn } from "@/lib/utils";
 
-const {
-  fieldContext,
-  formContext,
-  useFieldContext: _useFieldContext,
-  useFormContext,
-} = createFormHookContexts();
+const { fieldContext, formContext, useFieldContext, useFormContext } =
+  createFormHookContexts();
 
 const { useAppForm, withForm } = createFormHook({
   fieldComponents: {
@@ -48,6 +44,37 @@ const FormItemContext = React.createContext<FormItemContextValue>(
   {} as FormItemContextValue,
 );
 
+function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+  const field = useFormContexts();
+
+  return (
+    <Slot
+      aria-describedby={
+        !field.errors.length
+          ? field.descriptionId
+          : `${field.descriptionId} ${field.messageId}`
+      }
+      aria-invalid={!!field.errors.length}
+      data-slot="form-control"
+      id={field.formItemId}
+      {...props}
+    />
+  );
+}
+
+function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
+  const field = useFormContexts();
+
+  return (
+    <p
+      className={cn("text-muted-foreground text-sm", className)}
+      data-slot="form-description"
+      id={field.descriptionId}
+      {...props}
+    />
+  );
+}
+
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId();
 
@@ -62,83 +89,27 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-const useFieldContext = () => {
-  const { id } = React.useContext(FormItemContext);
-  const { name, store, ...fieldContext } = _useFieldContext();
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  const errors = useStore(store, (state) => state.meta.errors);
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!fieldContext) {
-    throw new Error("useFieldContext should be used within <FormItem>");
-  }
-
-  return {
-    errors,
-    formDescriptionId: `${id}-form-item-description`,
-    formItemId: `${id}-form-item`,
-    formMessageId: `${id}-form-item-message`,
-    id,
-    name,
-    store,
-    ...fieldContext,
-  };
-};
-
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
-  const { errors, formDescriptionId, formItemId, formMessageId } =
-    useFieldContext();
-
-  return (
-    <Slot
-      aria-describedby={
-        !errors.length
-          ? formDescriptionId
-          : `${formDescriptionId} ${formMessageId}`
-      }
-      aria-invalid={!!errors.length}
-      data-slot="form-control"
-      id={formItemId}
-      {...props}
-    />
-  );
-}
-
-function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
-  const { formDescriptionId } = useFieldContext();
-
-  return (
-    <p
-      className={cn("text-muted-foreground text-sm", className)}
-      data-slot="form-description"
-      id={formDescriptionId}
-      {...props}
-    />
-  );
-}
-
 function FormLabel({
   className,
   ...props
 }: React.ComponentProps<typeof Label>) {
-  const { errors, formItemId } = useFieldContext();
-
+  const field = useFormContexts();
   return (
     <Label
       className={cn("data-[error=true]:text-destructive", className)}
-      data-error={!!errors.length}
+      data-error={!!field.errors.length}
       data-slot="form-label"
-      htmlFor={formItemId}
+      htmlFor={field.formItemId}
       {...props}
     />
   );
 }
 
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
-  const { errors, formMessageId } = useFieldContext();
-  const body = errors.length
+  const field = useFormContexts();
+  const body = field.errors.length
     ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      String(errors.at(0)?.message ?? "")
+      String(field.errors.at(0)?.message ?? "")
     : props.children;
   if (!body) return null;
 
@@ -146,7 +117,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
     <p
       className={cn("text-destructive text-sm", className)}
       data-slot="form-message"
-      id={formMessageId}
+      id={field.messageId}
       {...props}
     >
       {body}
@@ -155,9 +126,11 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
 }
 
 function Input(props: React.ComponentProps<typeof _Input>) {
-  const field = _useFieldContext();
+  const { field, formItemId } = useFormContexts();
+
   return (
     <_Input
+      id={formItemId}
       name={field.name}
       onBlur={field.handleBlur}
       onChange={(e) => {
@@ -174,14 +147,15 @@ function Select({
   children,
   ...props
 }: React.ComponentProps<typeof SelectTrigger>) {
-  const field = _useFieldContext();
+  const { field, formItemId } = useFormContexts();
+
   return (
     <_Select
       name={field.name}
       onValueChange={field.handleChange}
       value={field.state.value as string}
     >
-      <SelectTrigger onBlur={field.handleBlur} {...props}>
+      <SelectTrigger id={formItemId} onBlur={field.handleBlur} {...props}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>{children}</SelectContent>
@@ -190,9 +164,11 @@ function Select({
 }
 
 function Textarea(props: React.ComponentProps<typeof _Textarea>) {
-  const field = _useFieldContext();
+  const { field, formItemId } = useFormContexts();
+
   return (
     <_Textarea
+      id={formItemId}
       name={field.name}
       onBlur={field.handleBlur}
       onChange={(e) => {
@@ -202,6 +178,21 @@ function Textarea(props: React.ComponentProps<typeof _Textarea>) {
       {...props}
     />
   );
+}
+
+function useFormContexts() {
+  const formItem = React.useContext(FormItemContext);
+  const field = useFieldContext();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  const errors = useStore(field.store, (state) => state.meta.errors);
+
+  return {
+    descriptionId: `${formItem.id}-form-item-description`,
+    errors,
+    field,
+    formItemId: `${formItem.id}-form-item`,
+    messageId: `${formItem.id}-form-item-message`,
+  };
 }
 
 export { useAppForm, useFieldContext, useFormContext, withForm };
