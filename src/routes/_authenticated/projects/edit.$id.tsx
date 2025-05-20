@@ -4,7 +4,6 @@ import { type Id } from "@server/dataModel";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import {
   ProjectForm,
@@ -13,41 +12,40 @@ import {
 import { Button } from "@/components/ui/button.tsx";
 import { TypographyH4 } from "@/components/ui/typography.tsx";
 
-export const Route = createFileRoute("/_authenticated/projects/create")({
+export const Route = createFileRoute("/_authenticated/projects/edit/$id")({
   component: RouteComponent,
-  validateSearch: z.object({ from: z.string().optional() }),
 });
 
 function RouteComponent() {
-  const navigate = Route.useNavigate();
-  const from = Route.useSearch().from as Id<"projects">;
-  const fromProject = useQuery({
-    ...convexQuery(api.projects.getProject, { id: from }),
-    enabled: !!from,
+  const projectId = Route.useParams().id as Id<"projects">;
+  const project = useQuery({
+    ...convexQuery(api.projects.getProject, { id: projectId }),
     select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
   });
 
-  const mutation = useMutation({
-    mutationFn: useConvexMutation(api.projects.createProject),
+  const navigate = Route.useNavigate();
+  const editProject = useMutation({
+    mutationFn: useConvexMutation(api.projects.editProject),
     onError: (error) => toast.error(error.message),
-    onSuccess: (data: typeof api.projects.createProject._returnType) =>
-      navigate({ params: { id: data }, to: "/projects/$id" }),
+    onSuccess: () =>
+      navigate({ params: { id: projectId }, to: "/projects/$id" }),
   });
+
   const form = useProjectForm({
-    defaultValues: fromProject.data,
+    defaultValues: project.data,
     submit: async (value) => {
-      await mutation.mutateAsync(value);
+      await editProject.mutateAsync({ id: projectId, ...value });
     },
   });
 
   return (
     <main className="px-8 py-4 flex flex-col gap-8">
       <header className="w-full grid grid-cols-[1fr_auto_auto] gap-4">
-        <TypographyH4>Create Project</TypographyH4>
+        <TypographyH4>Edit Project</TypographyH4>
         <Button asChild variant="secondary">
           <Link to="..">Return</Link>
         </Button>
-        <Button onClick={() => void form.handleSubmit()}>Create</Button>
+        <Button onClick={() => void form.handleSubmit()}>Edit</Button>
       </header>
       <ProjectForm form={form} />
     </main>

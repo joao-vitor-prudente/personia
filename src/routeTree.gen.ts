@@ -20,6 +20,7 @@ import { Route as AuthenticatedProjectsCreateImport } from './routes/_authentica
 import { Route as AuthenticatedProjectsIdImport } from './routes/_authenticated/projects/$id'
 import { Route as AuthenticatedPersonasCreateImport } from './routes/_authenticated/personas/create'
 import { Route as AuthenticatedPersonasIdImport } from './routes/_authenticated/personas/$id'
+import { Route as AuthenticatedProjectsEditIdImport } from './routes/_authenticated/projects/edit.$id'
 import { Route as AuthenticatedPersonasEditIdImport } from './routes/_authenticated/personas/edit.$id'
 
 // Create/Update Routes
@@ -81,6 +82,13 @@ const AuthenticatedPersonasIdRoute = AuthenticatedPersonasIdImport.update({
   path: '/personas/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+
+const AuthenticatedProjectsEditIdRoute =
+  AuthenticatedProjectsEditIdImport.update({
+    id: '/projects/edit/$id',
+    path: '/projects/edit/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 const AuthenticatedPersonasEditIdRoute =
   AuthenticatedPersonasEditIdImport.update({
@@ -163,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonasEditIdImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/projects/edit/$id': {
+      id: '/_authenticated/projects/edit/$id'
+      path: '/projects/edit/$id'
+      fullPath: '/projects/edit/$id'
+      preLoaderRoute: typeof AuthenticatedProjectsEditIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
   }
 }
 
@@ -176,6 +191,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPersonasIndexRoute: typeof AuthenticatedPersonasIndexRoute
   AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
   AuthenticatedPersonasEditIdRoute: typeof AuthenticatedPersonasEditIdRoute
+  AuthenticatedProjectsEditIdRoute: typeof AuthenticatedProjectsEditIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -186,6 +202,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPersonasIndexRoute: AuthenticatedPersonasIndexRoute,
   AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
   AuthenticatedPersonasEditIdRoute: AuthenticatedPersonasEditIdRoute,
+  AuthenticatedProjectsEditIdRoute: AuthenticatedProjectsEditIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -212,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/personas': typeof AuthenticatedPersonasIndexRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
   '/personas/edit/$id': typeof AuthenticatedPersonasEditIdRoute
+  '/projects/edit/$id': typeof AuthenticatedProjectsEditIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -224,6 +242,7 @@ export interface FileRoutesByTo {
   '/personas': typeof AuthenticatedPersonasIndexRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
   '/personas/edit/$id': typeof AuthenticatedPersonasEditIdRoute
+  '/projects/edit/$id': typeof AuthenticatedProjectsEditIdRoute
 }
 
 export interface FileRoutesById {
@@ -238,6 +257,7 @@ export interface FileRoutesById {
   '/_authenticated/personas/': typeof AuthenticatedPersonasIndexRoute
   '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
   '/_authenticated/personas/edit/$id': typeof AuthenticatedPersonasEditIdRoute
+  '/_authenticated/projects/edit/$id': typeof AuthenticatedProjectsEditIdRoute
 }
 
 export interface FileRouteTypes {
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/personas'
     | '/projects'
     | '/personas/edit/$id'
+    | '/projects/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
@@ -263,6 +284,7 @@ export interface FileRouteTypes {
     | '/personas'
     | '/projects'
     | '/personas/edit/$id'
+    | '/projects/edit/$id'
   id:
     | '__root__'
     | '/_authenticated'
@@ -275,6 +297,7 @@ export interface FileRouteTypes {
     | '/_authenticated/personas/'
     | '/_authenticated/projects/'
     | '/_authenticated/personas/edit/$id'
+    | '/_authenticated/projects/edit/$id'
   fileRoutesById: FileRoutesById
 }
 
@@ -311,7 +334,8 @@ export const routeTree = rootRoute
         "/_authenticated/projects/create",
         "/_authenticated/personas/",
         "/_authenticated/projects/",
-        "/_authenticated/personas/edit/$id"
+        "/_authenticated/personas/edit/$id",
+        "/_authenticated/projects/edit/$id"
       ]
     },
     "/_unauthenticated": {
@@ -350,6 +374,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/personas/edit/$id": {
       "filePath": "_authenticated/personas/edit.$id.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/projects/edit/$id": {
+      "filePath": "_authenticated/projects/edit.$id.tsx",
       "parent": "/_authenticated"
     }
   }

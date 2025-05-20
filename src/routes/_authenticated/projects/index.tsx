@@ -3,98 +3,19 @@ import { api } from "@server/api";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Copy,
-  EllipsisVertical,
-  Info,
-  Pencil,
-  Target,
-  Trash,
-  User,
-  Users,
-} from "lucide-react";
 import { useId } from "react";
 import { z } from "zod";
 
+import { ProjectCard } from "@/components/projects/project-card.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
 import { useAppForm } from "@/components/ui/form.tsx";
 import { SelectItem } from "@/components/ui/select.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
-import {
-  TypographyH4,
-  TypographyLarge,
-  TypographySmall,
-} from "@/components/ui/typography.tsx";
+import { TypographyH4, TypographyLarge } from "@/components/ui/typography.tsx";
 
 export const Route = createFileRoute("/_authenticated/projects/")({
   component: RouteComponent,
 });
-
-function ProjectCard(props: {
-  project: typeof api.projects.getProject._returnType;
-}) {
-  return (
-    <Link params={{ id: props.project._id }} to="/projects/$id">
-      <Card className="max-w-lg">
-        <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
-          <User />
-          <div>
-            <CardTitle>{props.project.name}</CardTitle>
-            <CardDescription>{props.project.category}</CardDescription>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <EllipsisVertical />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>
-                <Pencil />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Copy />
-                Copy
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Trash />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            <li className="flex gap-1 items-center">
-              <Target />
-              <TypographySmall>{props.project.objective}</TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              <Info />
-              <TypographySmall>{props.project.situation}</TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              <Users />
-              <TypographySmall>{props.project.targetAudience}</TypographySmall>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
 
 const formSchema = z.object({
   search: z.string(),

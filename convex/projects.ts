@@ -47,7 +47,39 @@ export const getProject = query({
     const identity = await getIdentityOrThrow(ctx);
     const project = await ctx.db.get(args.id);
     if (!project) throw new Error("Project not found");
-    if (project.organizationId === identity.organization.id) return project;
-    throw new Error("User is not authorized to view this project");
+    if (project.organizationId !== identity.organization.id)
+      throw new Error("User is not authorized to view this project");
+    return project;
+  },
+});
+
+export const editProject = mutation({
+  args: {
+    category: v.string(),
+    id: v.id("projects"),
+    name: v.string(),
+    objective: v.string(),
+    situation: v.string(),
+    targetAudience: v.string(),
+  },
+  handler: async (ctx, { id, ...args }) => {
+    const identity = await getIdentityOrThrow(ctx);
+    const project = await ctx.db.get(id);
+    if (!project) throw new Error("Project not found");
+    if (project.organizationId !== identity.organization.id)
+      throw new Error("User is not authorized to edit this project");
+    await ctx.db.patch(id, args);
+  },
+});
+
+export const deleteProject = mutation({
+  args: { id: v.id("projects") },
+  handler: async (ctx, args) => {
+    const identity = await getIdentityOrThrow(ctx);
+    const project = await ctx.db.get(args.id);
+    if (!project) throw new Error("Project not found");
+    if (project.organizationId !== identity.organization.id)
+      throw new Error("User is not authorized to delete this project");
+    await ctx.db.delete(args.id);
   },
 });

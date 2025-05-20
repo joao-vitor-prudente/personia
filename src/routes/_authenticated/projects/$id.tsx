@@ -1,12 +1,15 @@
 import type { Id } from "@server/dataModel";
 
-import { convexQuery } from "@convex-dev/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Copy, Info, Pencil, Plus, Target, Trash, Users } from "lucide-react";
+import { toast } from "sonner";
 
+import { DeleteProjectDialog } from "@/components/projects/delete-project-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog.tsx";
 import {
   TypographyH4,
   TypographyMuted,
@@ -18,10 +21,17 @@ export const Route = createFileRoute("/_authenticated/projects/$id")({
 });
 
 function RouteComponent() {
-  const projectId = Route.useParams().id;
+  const navigate = Route.useNavigate();
+  const projectId = Route.useParams().id as Id<"projects">;
   const project = useQuery(
-    convexQuery(api.projects.getProject, { id: projectId as Id<"projects"> }),
+    convexQuery(api.projects.getProject, { id: projectId }),
   );
+
+  const deleteProject = useMutation({
+    mutationFn: useConvexMutation(api.projects.deleteProject),
+    onError: (error) => toast.error(error.message),
+    onSuccess: () => navigate({ to: "/projects" }),
+  });
 
   if (!project.data) return null;
 
@@ -35,21 +45,35 @@ function RouteComponent() {
         <nav>
           <ul className="flex gap-2">
             <li>
-              <Button variant="outline">
-                <Trash />
-                Delete
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Trash />
+                    Delete
+                  </Button>
+                </DialogTrigger>
+                <DeleteProjectDialog
+                  deleteProject={() => {
+                    deleteProject.mutate({ id: projectId });
+                  }}
+                  name={project.data.name}
+                />
+              </Dialog>
+            </li>
+            <li>
+              <Button asChild variant="outline">
+                <Link search={{ from: projectId }} to="/projects/create">
+                  <Copy />
+                  Copy
+                </Link>
               </Button>
             </li>
             <li>
-              <Button variant="outline">
-                <Copy />
-                Copy
-              </Button>
-            </li>
-            <li>
-              <Button variant="outline">
-                <Pencil />
-                Edit
+              <Button asChild variant="outline">
+                <Link params={{ id: projectId }} to="/projects/edit/$id">
+                  <Pencil />
+                  Edit
+                </Link>
               </Button>
             </li>
             <li>
