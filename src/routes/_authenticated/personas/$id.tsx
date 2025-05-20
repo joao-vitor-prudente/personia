@@ -9,24 +9,15 @@ import {
   Copy,
   MapPin,
   Mars,
-  MessageCircleMore,
   Pencil,
   Trash,
   Venus,
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { DeletePersonaDialog } from "@/components/personas/delete-persona-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog.tsx";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog.tsx";
 import {
   TypographyBlockquote,
   TypographyH4,
@@ -71,31 +62,12 @@ function RouteComponent() {
                     Delete
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Delete Persona</DialogTitle>
-                    <DialogDescription>
-                      <span>Are you sure you want to delete </span>
-                      <span>{persona.data.name}</span>
-                      <span>?</span>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button
-                        onClick={() => {
-                          deletePersona.mutate({ id: personaId });
-                        }}
-                        variant="destructive"
-                      >
-                        Confirm
-                      </Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
+                <DeletePersonaDialog
+                  deletePersona={() => {
+                    deletePersona.mutate({ id: personaId });
+                  }}
+                  name={persona.data.name}
+                />
               </Dialog>
             </li>
             <li>
@@ -112,12 +84,6 @@ function RouteComponent() {
                   <Pencil />
                   Edit
                 </Link>
-              </Button>
-            </li>
-            <li>
-              <Button>
-                <MessageCircleMore />
-                Chat
               </Button>
             </li>
           </ul>

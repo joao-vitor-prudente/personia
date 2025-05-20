@@ -1,193 +1,21 @@
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@server/api";
 import { useStore } from "@tanstack/react-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  BriefcaseBusiness,
-  Cake,
-  Copy,
-  EllipsisVertical,
-  MapPin,
-  Mars,
-  MessageCircleMore,
-  Pencil,
-  Trash,
-  User,
-  Venus,
-} from "lucide-react";
 import { useId } from "react";
-import { toast } from "sonner";
 import { z } from "zod";
 
+import { PersonaCard } from "@/components/personas/porsona-card.tsx";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card.tsx";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog.tsx";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
 import { useAppForm } from "@/components/ui/form.tsx";
 import { SelectItem } from "@/components/ui/select.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
-import {
-  TypographyBlockquote,
-  TypographyH4,
-  TypographyLarge,
-  TypographySmall,
-} from "@/components/ui/typography";
+import { TypographyH4, TypographyLarge } from "@/components/ui/typography";
 
 export const Route = createFileRoute("/_authenticated/personas/")({
   component: RouteComponent,
 });
-
-function PersonaCard(props: {
-  persona: typeof api.personas.getPersona._returnType;
-}) {
-  const deletePersona = useMutation({
-    mutationFn: useConvexMutation(api.personas.deletePersona),
-    onError: (error) => toast.error(error.message),
-  });
-
-  return (
-    <Link params={{ id: props.persona._id }} to="/personas/$id">
-      <Card className="max-w-lg">
-        <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
-          <User />
-          <div>
-            <CardTitle>{props.persona.name}</CardTitle>
-            <CardDescription>{props.persona.nickname}</CardDescription>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <EllipsisVertical />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link
-                  params={{ id: props.persona._id }}
-                  to="/personas/edit/$id"
-                >
-                  <Pencil />
-                  Edit
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  search={{ from: props.persona._id }}
-                  to="/personas/create"
-                >
-                  <Copy />
-                  Copy
-                </Link>
-              </DropdownMenuItem>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <DropdownMenuItem>
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Delete Persona</DialogTitle>
-                    <DialogDescription>
-                      <span>Are you sure you want to delete </span>
-                      <span>{props.persona.name}</span>
-                      <span>?</span>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button
-                        onClick={() => {
-                          deletePersona.mutate({ id: props.persona._id });
-                        }}
-                        variant="destructive"
-                      >
-                        Confirm
-                      </Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            <li>
-              <TypographyBlockquote>{props.persona.quote}</TypographyBlockquote>
-            </li>
-            <li className="flex gap-1 items-center">
-              <Cake />
-              <TypographySmall className="space-x-1">
-                <span>{props.persona.demographicProfile.age}</span>
-                <span>years</span>
-              </TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              {props.persona.demographicProfile.gender === "male" ? (
-                <Mars />
-              ) : (
-                <Venus />
-              )}
-              <TypographySmall>
-                {props.persona.demographicProfile.gender === "male"
-                  ? "Male"
-                  : "Female"}
-              </TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              <MapPin />
-              <TypographySmall className="space-x-1">
-                <span>{props.persona.demographicProfile.country}</span>
-                <span>-</span>
-                <span>{props.persona.demographicProfile.state}</span>
-              </TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              <BriefcaseBusiness />
-              <TypographySmall>
-                {props.persona.demographicProfile.occupation}
-              </TypographySmall>
-            </li>
-          </ul>
-        </CardContent>
-        <CardFooter>
-          <CardAction className="w-full">
-            <Button className="w-full">
-              <MessageCircleMore />
-              Chat
-            </Button>
-          </CardAction>
-        </CardFooter>
-      </Card>
-    </Link>
-  );
-}
 
 const formSchema = z.object({
   search: z.string(),
