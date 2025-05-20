@@ -55,7 +55,33 @@ export const getPersona = query({
     const identity = await getIdentityOrThrow(ctx);
     const persona = await ctx.db.get(args.id);
     if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId === identity.organization.id) return persona;
-    throw new Error("User is not authorized to view this persona");
+    if (persona.organizationId !== identity.organization.id)
+      throw new Error("User is not authorized to view this persona");
+    return persona;
+  },
+});
+
+export const editPersona = mutation({
+  args: {
+    background: v.string(),
+    demographicProfile: v.object({
+      age: v.number(),
+      country: v.string(),
+      gender: v.union(v.literal("male"), v.literal("female")),
+      occupation: v.string(),
+      state: v.string(),
+    }),
+    id: v.id("personas"),
+    name: v.string(),
+    nickname: v.string(),
+    quote: v.string(),
+  },
+  handler: async (ctx, { id, ...args }) => {
+    const identity = await getIdentityOrThrow(ctx);
+    const persona = await ctx.db.get(id);
+    if (!persona) throw new Error("Persona not found");
+    if (persona.organizationId !== identity.organization.id)
+      throw new Error("User is not authorized to edit this persona");
+    await ctx.db.patch(id, args);
   },
 });

@@ -18,7 +18,6 @@ import {
 
 export const Route = createFileRoute("/_authenticated/personas/edit/$id")({
   component: RouteComponent,
-  validateSearch: z.object({ from: z.string().optional() }),
 });
 
 const formSchema = z.object({
@@ -36,19 +35,18 @@ const formSchema = z.object({
 });
 
 function RouteComponent() {
-  const from = Route.useSearch().from;
+  const personaId = Route.useParams().id as Id<"personas">;
   const fromPersona = useQuery({
-    ...convexQuery(api.personas.getPersona, { id: from as Id<"personas"> }),
-    enabled: !!from,
-    select: ({ organizationId: _, ...data }) => data,
+    ...convexQuery(api.personas.getPersona, { id: personaId }),
+    select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
   });
 
   const navigate = Route.useNavigate();
   const mutation = useMutation({
-    mutationFn: useConvexMutation(api.personas.createPersona),
+    mutationFn: useConvexMutation(api.personas.editPersona),
     onError: (error) => toast.error(error.message),
-    onSuccess: (data: typeof api.personas.createPersona._returnType) =>
-      navigate({ params: { id: data }, to: "/personas/$id" }),
+    onSuccess: () =>
+      navigate({ params: { id: personaId }, to: "/personas/$id" }),
   });
   const form = useAppForm({
     defaultValues:
@@ -67,7 +65,7 @@ function RouteComponent() {
         quote: "",
       } as z.infer<typeof formSchema>),
     onSubmit: async ({ value }) => {
-      await mutation.mutateAsync(value);
+      await mutation.mutateAsync({ ...value, id: personaId });
     },
     validators: { onChange: formSchema },
   });
@@ -84,11 +82,11 @@ function RouteComponent() {
   return (
     <main className="px-8 py-4 flex flex-col gap-8">
       <header className="w-full grid grid-cols-[1fr_auto_auto] gap-4">
-        <TypographyH4>Create Persona</TypographyH4>
+        <TypographyH4>Edit Persona</TypographyH4>
         <Button asChild variant="secondary">
           <Link to="..">Return</Link>
         </Button>
-        <Button onClick={() => void form.handleSubmit()}>Create</Button>
+        <Button onClick={() => void form.handleSubmit()}>Edit</Button>
       </header>
       <form.AppForm>
         <form className="grid grid-cols-[1fr_2fr] gap-x-48 gap-y-24">

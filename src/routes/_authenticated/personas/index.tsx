@@ -66,9 +66,14 @@ function PersonaCard(props: {
               <EllipsisVertical />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>
-                <Pencil />
-                Edit
+              <DropdownMenuItem asChild>
+                <Link
+                  params={{ id: props.persona._id }}
+                  to="/personas/edit/$id"
+                >
+                  <Pencil />
+                  Edit
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link

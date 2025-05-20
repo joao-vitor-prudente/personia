@@ -60,9 +60,11 @@ function RouteComponent() {
               </Button>
             </li>
             <li>
-              <Button variant="outline">
-                <Pencil />
-                Edit
+              <Button asChild variant="outline">
+                <Link params={{ id: personaId }} to="/personas/edit/$id">
+                  <Pencil />
+                  Edit
+                </Link>
               </Button>
             </li>
             <li>
