@@ -20,6 +20,7 @@ import { Route as AuthenticatedProjectsCreateImport } from './routes/_authentica
 import { Route as AuthenticatedProjectsIdImport } from './routes/_authenticated/projects/$id'
 import { Route as AuthenticatedPersonasCreateImport } from './routes/_authenticated/personas/create'
 import { Route as AuthenticatedPersonasIdImport } from './routes/_authenticated/personas/$id'
+import { Route as AuthenticatedExperimentsIdImport } from './routes/_authenticated/experiments/$id'
 import { Route as AuthenticatedProjectsEditIdImport } from './routes/_authenticated/projects/edit.$id'
 import { Route as AuthenticatedPersonasEditIdImport } from './routes/_authenticated/personas/edit.$id'
 
@@ -83,6 +84,14 @@ const AuthenticatedPersonasIdRoute = AuthenticatedPersonasIdImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
+const AuthenticatedExperimentsIdRoute = AuthenticatedExperimentsIdImport.update(
+  {
+    id: '/experiments/$id',
+    path: '/experiments/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any,
+)
+
 const AuthenticatedProjectsEditIdRoute =
   AuthenticatedProjectsEditIdImport.update({
     id: '/projects/edit/$id',
@@ -121,6 +130,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof UnauthenticatedIndexImport
       parentRoute: typeof UnauthenticatedRouteImport
+    }
+    '/_authenticated/experiments/$id': {
+      id: '/_authenticated/experiments/$id'
+      path: '/experiments/$id'
+      fullPath: '/experiments/$id'
+      preLoaderRoute: typeof AuthenticatedExperimentsIdImport
+      parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/personas/$id': {
       id: '/_authenticated/personas/$id'
@@ -184,6 +200,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedExperimentsIdRoute: typeof AuthenticatedExperimentsIdRoute
   AuthenticatedPersonasIdRoute: typeof AuthenticatedPersonasIdRoute
   AuthenticatedPersonasCreateRoute: typeof AuthenticatedPersonasCreateRoute
   AuthenticatedProjectsIdRoute: typeof AuthenticatedProjectsIdRoute
@@ -195,6 +212,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedExperimentsIdRoute: AuthenticatedExperimentsIdRoute,
   AuthenticatedPersonasIdRoute: AuthenticatedPersonasIdRoute,
   AuthenticatedPersonasCreateRoute: AuthenticatedPersonasCreateRoute,
   AuthenticatedProjectsIdRoute: AuthenticatedProjectsIdRoute,
@@ -222,6 +240,7 @@ const UnauthenticatedRouteRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof UnauthenticatedRouteRouteWithChildren
   '/': typeof UnauthenticatedIndexRoute
+  '/experiments/$id': typeof AuthenticatedExperimentsIdRoute
   '/personas/$id': typeof AuthenticatedPersonasIdRoute
   '/personas/create': typeof AuthenticatedPersonasCreateRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
@@ -235,6 +254,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteRouteWithChildren
   '/': typeof UnauthenticatedIndexRoute
+  '/experiments/$id': typeof AuthenticatedExperimentsIdRoute
   '/personas/$id': typeof AuthenticatedPersonasIdRoute
   '/personas/create': typeof AuthenticatedPersonasCreateRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
@@ -250,6 +270,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
+  '/_authenticated/experiments/$id': typeof AuthenticatedExperimentsIdRoute
   '/_authenticated/personas/$id': typeof AuthenticatedPersonasIdRoute
   '/_authenticated/personas/create': typeof AuthenticatedPersonasCreateRoute
   '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
@@ -265,6 +286,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/'
+    | '/experiments/$id'
     | '/personas/$id'
     | '/personas/create'
     | '/projects/$id'
@@ -277,6 +299,7 @@ export interface FileRouteTypes {
   to:
     | ''
     | '/'
+    | '/experiments/$id'
     | '/personas/$id'
     | '/personas/create'
     | '/projects/$id'
@@ -290,6 +313,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_unauthenticated'
     | '/_unauthenticated/'
+    | '/_authenticated/experiments/$id'
     | '/_authenticated/personas/$id'
     | '/_authenticated/personas/create'
     | '/_authenticated/projects/$id'
@@ -328,6 +352,7 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated/route.tsx",
       "children": [
+        "/_authenticated/experiments/$id",
         "/_authenticated/personas/$id",
         "/_authenticated/personas/create",
         "/_authenticated/projects/$id",
@@ -347,6 +372,10 @@ export const routeTree = rootRoute
     "/_unauthenticated/": {
       "filePath": "_unauthenticated/index.tsx",
       "parent": "/_unauthenticated"
+    },
+    "/_authenticated/experiments/$id": {
+      "filePath": "_authenticated/experiments/$id.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/personas/$id": {
       "filePath": "_authenticated/personas/$id.tsx",

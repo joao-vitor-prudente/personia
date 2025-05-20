@@ -3,7 +3,6 @@ import { api } from "@server/api";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useId } from "react";
 import { z } from "zod";
 
 import { ProjectCard } from "@/components/projects/project-card.tsx";
@@ -33,8 +32,6 @@ function RouteComponent() {
   const projects = useQuery(
     convexQuery(api.projects.listProjects, { search, sorting }),
   );
-  const searchFieldId = useId();
-  const sortingFieldId = useId();
 
   return (
     <main className="px-8 py-4 flex flex-col gap-8">
@@ -49,11 +46,9 @@ function RouteComponent() {
           <form.AppField name="search">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel className="sr-only" htmlFor={searchFieldId}>
-                  Search
-                </field.FormLabel>
+                <field.FormLabel className="sr-only">Search</field.FormLabel>
                 <field.FormControl>
-                  <field.Input id={searchFieldId} placeholder="Search" />
+                  <field.Input placeholder="Search" />
                 </field.FormControl>
                 <field.FormDescription className="sr-only">
                   Name or nickname of the project to search for
@@ -65,11 +60,9 @@ function RouteComponent() {
           <form.AppField name="sorting">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel className="sr-only" htmlFor={sortingFieldId}>
-                  Sorting
-                </field.FormLabel>
+                <field.FormLabel className="sr-only">Sorting</field.FormLabel>
                 <field.FormControl>
-                  <field.Select id={sortingFieldId}>
+                  <field.Select>
                     <SelectItem value="asc">Newest first</SelectItem>
                     <SelectItem value="desc">Oldest first</SelectItem>
                   </field.Select>

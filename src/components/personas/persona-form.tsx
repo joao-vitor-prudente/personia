@@ -1,4 +1,3 @@
-import { useId } from "react";
 import { z } from "zod";
 
 import { useAppForm } from "@/components/ui/form.tsx";
@@ -38,16 +37,6 @@ const defaultValues: FormData = {
 type Form = ReturnType<typeof usePersonaForm>;
 
 export function PersonaForm(props: { form: Form }) {
-  const nameFieldId = useId();
-  const nicknameFieldId = useId();
-  const quoteFieldId = useId();
-  const backgroundFieldId = useId();
-  const ageFieldId = useId();
-  const genderFieldId = useId();
-  const countryFieldId = useId();
-  const stateFieldId = useId();
-  const occupationFieldId = useId();
-
   return (
     <props.form.AppForm>
       <form className="grid grid-cols-[1fr_2fr] gap-x-48 gap-y-24">
@@ -55,9 +44,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="name">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={nameFieldId}>Name</field.FormLabel>
+                <field.FormLabel>Name</field.FormLabel>
                 <field.FormControl>
-                  <field.Input autoComplete="off" id={nameFieldId} />
+                  <field.Input autoComplete="off" />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's name.
@@ -69,11 +58,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="nickname">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={nicknameFieldId}>
-                  Nickname
-                </field.FormLabel>
+                <field.FormLabel>Nickname</field.FormLabel>
                 <field.FormControl>
-                  <field.Input id={nicknameFieldId} />
+                  <field.Input />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's nickname.
@@ -85,9 +72,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="quote">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={quoteFieldId}>Quote</field.FormLabel>
+                <field.FormLabel>Quote</field.FormLabel>
                 <field.FormControl>
-                  <field.Textarea id={quoteFieldId} />
+                  <field.Textarea />
                 </field.FormControl>
                 <field.FormDescription>
                   This is a quote from your persona.
@@ -101,11 +88,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="background">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={backgroundFieldId}>
-                  Background
-                </field.FormLabel>
+                <field.FormLabel>Background</field.FormLabel>
                 <field.FormControl>
-                  <field.Textarea id={backgroundFieldId} />
+                  <field.Textarea />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's background.
@@ -126,9 +111,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="demographicProfile.age">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={ageFieldId}>Age</field.FormLabel>
+                <field.FormLabel>Age</field.FormLabel>
                 <field.FormControl>
-                  <field.Input id={ageFieldId} type="number" />
+                  <field.Input type="number" />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's age.
@@ -140,11 +125,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="demographicProfile.gender">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={genderFieldId}>
-                  Gender
-                </field.FormLabel>
+                <field.FormLabel>Gender</field.FormLabel>
                 <field.FormControl>
-                  <field.Select className="w-full" id={genderFieldId}>
+                  <field.Select>
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
                   </field.Select>
@@ -159,11 +142,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="demographicProfile.country">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={countryFieldId}>
-                  Country
-                </field.FormLabel>
+                <field.FormLabel>Country</field.FormLabel>
                 <field.FormControl>
-                  <field.Input id={countryFieldId} />
+                  <field.Input />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's country.
@@ -175,9 +156,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="demographicProfile.state">
             {(field) => (
               <field.FormItem>
-                <field.FormLabel htmlFor={stateFieldId}>State</field.FormLabel>
+                <field.FormLabel>State</field.FormLabel>
                 <field.FormControl>
-                  <field.Input id={stateFieldId} />
+                  <field.Input />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's state.
@@ -189,11 +170,9 @@ export function PersonaForm(props: { form: Form }) {
           <props.form.AppField name="demographicProfile.occupation">
             {(field) => (
               <field.FormItem className="col-span-2">
-                <field.FormLabel htmlFor={occupationFieldId}>
-                  Occupation
-                </field.FormLabel>
+                <field.FormLabel>Occupation</field.FormLabel>
                 <field.FormControl>
-                  <field.Input id={occupationFieldId} />
+                  <field.Input />
                 </field.FormControl>
                 <field.FormDescription>
                   This is your persona's occupation.

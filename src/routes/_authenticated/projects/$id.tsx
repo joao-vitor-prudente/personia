@@ -7,6 +7,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Copy, Info, Pencil, Plus, Target, Trash, Users } from "lucide-react";
 import { toast } from "sonner";
 
+import { CreateExperimentDialog } from "@/components/experiments/create-experiment-dialog.tsx";
 import { DeleteProjectDialog } from "@/components/projects/delete-project-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog.tsx";
@@ -77,10 +78,20 @@ function RouteComponent() {
               </Button>
             </li>
             <li>
-              <Button>
-                <Plus />
-                Create new experiment
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus />
+                    Create new experiment
+                  </Button>
+                </DialogTrigger>
+                <CreateExperimentDialog
+                  onCreate={(id) =>
+                    navigate({ to: "/experiments/$id", params: { id } })
+                  }
+                  projectId={projectId}
+                />
+              </Dialog>
             </li>
           </ul>
         </nav>

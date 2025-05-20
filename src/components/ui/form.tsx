@@ -8,6 +8,7 @@ import * as React from "react";
 
 import { Input as _Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label";
+import { MultiSelect as _MultiSelect } from "@/components/ui/multi-select.tsx";
 import {
   Select as _Select,
   SelectContent,
@@ -28,6 +29,7 @@ const { useAppForm, withForm } = createFormHook({
     FormLabel,
     FormMessage,
     Input,
+    MultiSelect,
     Select,
     Textarea,
   },
@@ -125,7 +127,12 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   );
 }
 
-function Input(props: React.ComponentProps<typeof _Input>) {
+function Input(
+  props: Omit<
+    React.ComponentProps<typeof _Input>,
+    "id" | "name" | "onBlur" | "onValueChange" | "value"
+  >,
+) {
   const { field, formItemId } = useFormContexts();
 
   return (
@@ -143,27 +150,67 @@ function Input(props: React.ComponentProps<typeof _Input>) {
   );
 }
 
-function Select({
-  children,
-  ...props
-}: React.ComponentProps<typeof SelectTrigger>) {
+function MultiSelect(
+  props: Omit<
+    React.ComponentProps<typeof _MultiSelect>,
+    "id" | "name" | "onBlur" | "onValueChange" | "value"
+  >,
+) {
   const { field, formItemId } = useFormContexts();
+  return (
+    <_MultiSelect
+      id={formItemId}
+      name={field.name}
+      onBlur={field.handleBlur}
+      onValueChange={(value) => {
+        field.handleChange(value);
+      }}
+      value={field.state.value as string[]}
+      {...props}
+    />
+  );
+}
 
+function Select(props: {
+  children: React.ReactNode;
+  contentProps?: Omit<React.ComponentProps<typeof SelectContent>, "children">;
+  selectProps?: Omit<
+    React.ComponentProps<typeof _Select>,
+    "children" | "name" | "onValueChange" | "value"
+  >;
+  triggerProps?: Omit<
+    React.ComponentProps<typeof SelectTrigger>,
+    "children" | "id" | "onBlur"
+  >;
+  valueProps?: React.ComponentProps<typeof SelectValue>;
+}) {
+  const { field, formItemId } = useFormContexts();
   return (
     <_Select
       name={field.name}
       onValueChange={field.handleChange}
       value={field.state.value as string}
+      {...props.selectProps}
     >
-      <SelectTrigger id={formItemId} onBlur={field.handleBlur} {...props}>
-        <SelectValue />
+      <SelectTrigger
+        id={formItemId}
+        onBlur={field.handleBlur}
+        {...props.triggerProps}
+        className={cn("w-full", props.triggerProps?.className)}
+      >
+        <SelectValue {...props.valueProps} />
       </SelectTrigger>
-      <SelectContent>{children}</SelectContent>
+      <SelectContent {...props.contentProps}>{props.children}</SelectContent>
     </_Select>
   );
 }
 
-function Textarea(props: React.ComponentProps<typeof _Textarea>) {
+function Textarea(
+  props: Omit<
+    React.ComponentProps<typeof _Textarea>,
+    "id" | "name" | "onBlur" | "onValueChange" | "value"
+  >,
+) {
   const { field, formItemId } = useFormContexts();
 
   return (
