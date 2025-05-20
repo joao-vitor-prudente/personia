@@ -1,6 +1,7 @@
-import { useConvexMutation } from "@convex-dev/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
-import { useMutation } from "@tanstack/react-query";
+import { type Id } from "@server/dataModel";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useId } from "react";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ import {
 
 export const Route = createFileRoute("/_authenticated/personas/create")({
   component: RouteComponent,
+  validateSearch: z.object({ from: z.string().optional() }),
 });
 
 const formSchema = z.object({
@@ -34,6 +36,13 @@ const formSchema = z.object({
 });
 
 function RouteComponent() {
+  const from = Route.useSearch().from;
+  const fromPersona = useQuery({
+    ...convexQuery(api.personas.getPersona, { id: from as Id<"personas"> }),
+    enabled: !!from,
+    select: ({ organizationId: _, ...data }) => data,
+  });
+
   const navigate = Route.useNavigate();
   const mutation = useMutation({
     mutationFn: useConvexMutation(api.personas.createPersona),
@@ -42,19 +51,21 @@ function RouteComponent() {
       navigate({ params: { id: data }, to: "/personas/$id" }),
   });
   const form = useAppForm({
-    defaultValues: {
-      background: "",
-      demographicProfile: {
-        age: 0,
-        country: "",
-        gender: "male",
-        occupation: "",
-        state: "",
-      },
-      name: "",
-      nickname: "",
-      quote: "",
-    } as z.infer<typeof formSchema>,
+    defaultValues:
+      fromPersona.data ??
+      ({
+        background: "",
+        demographicProfile: {
+          age: 0,
+          country: "",
+          gender: "male",
+          occupation: "",
+          state: "",
+        },
+        name: "",
+        nickname: "",
+        quote: "",
+      } as z.infer<typeof formSchema>),
     onSubmit: async ({ value }) => {
       await mutation.mutateAsync(value);
     },

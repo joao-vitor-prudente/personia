@@ -70,9 +70,14 @@ function PersonaCard(props: {
                 <Pencil />
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Copy />
-                Copy
+              <DropdownMenuItem asChild>
+                <Link
+                  search={{ from: props.persona._id }}
+                  to="/personas/create"
+                >
+                  <Copy />
+                  Copy
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Trash />

@@ -2,7 +2,7 @@ import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@server/api";
 import { type Id } from "@server/dataModel";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BriefcaseBusiness,
   Cake,
@@ -52,9 +52,11 @@ function RouteComponent() {
               </Button>
             </li>
             <li>
-              <Button variant="outline">
-                <Copy />
-                Copy
+              <Button asChild variant="outline">
+                <Link search={{ from: personaId }} to="/personas/create">
+                  <Copy />
+                  Copy
+                </Link>
               </Button>
             </li>
             <li>
