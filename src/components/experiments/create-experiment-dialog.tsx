@@ -15,15 +15,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog.tsx";
 import { useAppForm } from "@/components/ui/form.tsx";
+import { z2 } from "@/lib/zod-extensions.ts";
 
 const formSchema = z.object({
   name: z.string(),
-  personas: z.array(z.string()),
+  personas: z.array(z2.id("personas")),
+  projectId: z2.id("projects"),
 });
 
 type FormData = z.infer<typeof formSchema>;
-
-const defaultValues: FormData = { name: "", personas: [] };
 
 export function CreateExperimentDialog(props: {
   onCreate: (id: Id<"experiments">) => Promise<void>;
@@ -46,14 +46,16 @@ export function CreateExperimentDialog(props: {
       await props.onCreate(id);
     },
   });
+  
+  const defaultValues: FormData = {
+    name: "",
+    personas: [],
+    projectId: props.projectId,
+  };
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value }) => {
-      await createExperiment.mutateAsync({
-        name: value.name,
-        personas: value.personas as Id<"personas">[],
-        projectId: props.projectId,
-      });
+      await createExperiment.mutateAsync(value);
     },
     validators: { onChange: formSchema },
   });
