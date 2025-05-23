@@ -157,15 +157,16 @@ function MultiSelect(
   >,
 ) {
   const { field, formItemId } = useFormContexts();
+
   return (
     <_MultiSelect
+      defaultValue={field.state.value as string[]}
       id={formItemId}
       name={field.name}
       onBlur={field.handleBlur}
       onValueChange={(value) => {
         field.handleChange(value);
       }}
-      value={field.state.value as string[]}
       {...props}
     />
   );

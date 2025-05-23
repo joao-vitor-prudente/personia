@@ -1,3 +1,4 @@
+import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { v } from "convex/values";
 
 import { type Id } from "./_generated/dataModel";
@@ -12,8 +13,9 @@ import { getIdentityOrThrow } from "./helpers";
 async function getExperimentProject(
   ctx: MutationCtx | QueryCtx,
   projectId: Id<"projects">,
+  _identity?: Awaited<ReturnType<typeof getIdentityOrThrow>>,
 ) {
-  const identity = await getIdentityOrThrow(ctx);
+  const identity = _identity ?? (await getIdentityOrThrow(ctx));
   const project = await ctx.db.get(projectId);
   if (project?.organizationId !== identity.organization.id)
     throw new Error("User is not authorized to view this project");
@@ -26,10 +28,19 @@ export const listProjectExperiments = query({
   },
   handler: async (ctx, args) => {
     await getExperimentProject(ctx, args.projectId);
-    return await ctx.db
+    const experiments = await ctx.db
       .query("experiments")
       .withIndex("projectId", (q) => q.eq("projectId", args.projectId))
       .collect();
+    const personas = await getAllOrThrow(
+      ctx.db,
+      experiments.flatMap((e) => e.personas),
+    );
+
+    return experiments.map((e) => ({
+      ...e,
+      personas: personas.filter((p) => e.personas.includes(p._id)),
+    }));
   },
 });
 
@@ -52,7 +63,9 @@ export const getExperiment = query({
     id: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    return await _getExperiment(ctx, args.id);
+    const experiment = await _getExperiment(ctx, args.id);
+    const personas = await getAllOrThrow(ctx.db, experiment.personas);
+    return { ...experiment, personas };
   },
 });
 
@@ -63,9 +76,13 @@ export const createExperiment = mutation({
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
-    await getExperimentProject(ctx, args.projectId);
+    const identity = await getIdentityOrThrow(ctx);
+    await getExperimentProject(ctx, args.projectId, identity);
+
     return await ctx.db.insert("experiments", {
       name: args.name,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      owner: identity.email!,
       personas: args.personas,
       projectId: args.projectId,
     });
@@ -79,5 +96,17 @@ export const deleteExperiment = mutation({
   handler: async (ctx, args) => {
     await _getExperiment(ctx, args.id);
     await ctx.db.delete(args.id);
+  },
+});
+
+export const editExperiment = mutation({
+  args: {
+    id: v.id("experiments"),
+    name: v.string(),
+    personas: v.array(v.id("personas")),
+  },
+  handler: async (ctx, { id, ...args }) => {
+    await _getExperiment(ctx, id);
+    await ctx.db.patch(id, args);
   },
 });

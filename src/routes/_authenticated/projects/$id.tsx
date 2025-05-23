@@ -8,6 +8,7 @@ import { Copy, Info, Pencil, Plus, Target, Trash, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { CreateExperimentDialog } from "@/components/experiments/create-experiment-dialog.tsx";
+import { ExperimentCard } from "@/components/experiments/experiment-card.tsx";
 import { DeleteProjectDialog } from "@/components/projects/delete-project-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog.tsx";
@@ -26,6 +27,9 @@ function RouteComponent() {
   const projectId = Route.useParams().id as Id<"projects">;
   const project = useQuery(
     convexQuery(api.projects.getProject, { id: projectId }),
+  );
+  const experiments = useQuery(
+    convexQuery(api.experiments.listProjectExperiments, { projectId }),
   );
 
   const deleteProject = useMutation({
@@ -87,7 +91,7 @@ function RouteComponent() {
                 </DialogTrigger>
                 <CreateExperimentDialog
                   onCreate={(id) =>
-                    navigate({ to: "/experiments/$id", params: { id } })
+                    navigate({ params: { id }, to: "/experiments/$id" })
                   }
                   projectId={projectId}
                 />
@@ -96,7 +100,7 @@ function RouteComponent() {
           </ul>
         </nav>
       </header>
-      <section className="space-y-8">
+      <section className="space-y-8 col-span-2">
         <ul className="space-y-2">
           <li className="flex gap-1 items-center">
             <Target />
@@ -110,6 +114,19 @@ function RouteComponent() {
             <Users />
             <TypographySmall>{project.data.targetAudience}</TypographySmall>
           </li>
+        </ul>
+      </section>
+      <section className="space-y-4 col-span-2">
+        <TypographyH4>Experiments</TypographyH4>
+        <ul className="space-y-2">
+          {experiments.data?.map((experiment) => (
+            <li key={experiment._id}>
+              <ExperimentCard
+                experiment={experiment}
+                projectName={project.data.name}
+              />
+            </li>
+          ))}
         </ul>
       </section>
     </main>
