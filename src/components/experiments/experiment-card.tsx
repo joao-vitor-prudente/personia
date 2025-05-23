@@ -24,7 +24,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion.tsx";
-import { Button } from "@/components/ui/button.tsx";
 import { Dialog } from "@/components/ui/dialog.tsx";
 import {
   DropdownMenu,
@@ -54,11 +53,13 @@ export function ExperimentCard(props: {
     <Accordion collapsible type="single">
       <AccordionItem className="space-y-4" value={props.experiment._id}>
         <section className="bg-card text-card-foreground grid grid-cols-[repeat(4,_1fr)_auto] items-center rounded-xl border p-6 shadow-sm">
-          <Button asChild className="justify-start" variant="link">
-            <Link params={{ id: props.experiment._id }} to="/experiments/$id">
-              <TypographyH5>{props.experiment.name}</TypographyH5>
-            </Link>
-          </Button>
+          <Link
+            className="underline-offset-4 hover:underline"
+            params={{ id: props.experiment._id }}
+            to="/experiments/$id"
+          >
+            <TypographyH5>{props.experiment.name}</TypographyH5>
+          </Link>
           <TypographyMuted className="flex gap-2">
             <User />
             <span>{props.experiment.owner}</span>

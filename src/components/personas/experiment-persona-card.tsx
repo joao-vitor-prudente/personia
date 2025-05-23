@@ -2,7 +2,6 @@ import { type api } from "@server/api";
 import { Link } from "@tanstack/react-router";
 import { BriefcaseBusiness, Cake, MapPin, Mars, Venus } from "lucide-react";
 
-import { Button } from "@/components/ui/button.tsx";
 import {
   TypographyMuted,
   TypographySmall,
@@ -13,11 +12,13 @@ export function ExperimentPersonaCard(props: {
 }) {
   return (
     <section className="grid grid-cols-[repeat(5,_1fr)_auto] items-center">
-      <Button asChild className="justify-start" variant="link">
-        <Link params={{ id: props.persona._id }} to="/personas/$id">
-          <TypographySmall>{props.persona.name}</TypographySmall>
-        </Link>
-      </Button>
+      <Link
+        className="underline-offset-4 hover:underline"
+        params={{ id: props.persona._id }}
+        to="/personas/$id"
+      >
+        <TypographySmall>{props.persona.name}</TypographySmall>
+      </Link>
       <TypographyMuted>{props.persona.nickname}</TypographyMuted>
       <TypographyMuted className="flex gap-2 items-center">
         <Cake />

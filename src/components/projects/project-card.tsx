@@ -3,13 +3,13 @@ import { api } from "@server/api";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
+  ClipboardList,
   Copy,
   EllipsisVertical,
   Info,
   Pencil,
   Target,
   Trash,
-  User,
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -39,71 +39,68 @@ export function ProjectCard(props: {
     onError: (error) => toast.error(error.message),
   });
   return (
-    <Link params={{ id: props.project._id }} to="/projects/$id">
-      <Card className="max-w-lg">
-        <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
-          <User />
-          <div>
-            <CardTitle>{props.project.name}</CardTitle>
-            <CardDescription>{props.project.category}</CardDescription>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <EllipsisVertical />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link
-                  params={{ id: props.project._id }}
-                  to="/projects/edit/$id"
-                >
-                  <Pencil />
-                  Edit
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  search={{ from: props.project._id }}
-                  to="/projects/create"
-                >
-                  <Copy />
-                  Copy
-                </Link>
-              </DropdownMenuItem>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <DropdownMenuItem>
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DeleteProjectDialog
-                  deleteProject={() => {
-                    deleteProject.mutate({ id: props.project._id });
-                  }}
-                  name={props.project.name}
-                />
-              </Dialog>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            <li className="flex gap-1 items-center">
-              <Target />
-              <TypographySmall>{props.project.objective}</TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              <Info />
-              <TypographySmall>{props.project.situation}</TypographySmall>
-            </li>
-            <li className="flex gap-1 items-center">
-              <Users />
-              <TypographySmall>{props.project.targetAudience}</TypographySmall>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-    </Link>
+    <Card className="max-w-lg">
+      <CardHeader className="grid-cols-[auto_1fr_auto] gap-4">
+        <ClipboardList />
+        <Link
+          className="underline-offset-4 hover:underline"
+          params={{ id: props.project._id }}
+          to="/projects/$id"
+        >
+          <CardTitle>{props.project.name}</CardTitle>
+          <CardDescription>{props.project.category}</CardDescription>
+        </Link>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <EllipsisVertical />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link params={{ id: props.project._id }} to="/projects/edit/$id">
+                <Pencil />
+                Edit
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link search={{ from: props.project._id }} to="/projects/create">
+                <Copy />
+                Copy
+              </Link>
+            </DropdownMenuItem>
+            <Dialog>
+              <DialogTrigger asChild>
+                <DropdownMenuItem>
+                  <Trash />
+                  Delete
+                </DropdownMenuItem>
+              </DialogTrigger>
+              <DeleteProjectDialog
+                deleteProject={() => {
+                  deleteProject.mutate({ id: props.project._id });
+                }}
+                name={props.project.name}
+              />
+            </Dialog>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-2">
+          <li className="flex gap-1 items-center">
+            <Target />
+            <TypographySmall>{props.project.objective}</TypographySmall>
+          </li>
+          <li className="flex gap-1 items-center">
+            <Info />
+            <TypographySmall>{props.project.situation}</TypographySmall>
+          </li>
+          <li className="flex gap-1 items-center">
+            <Users />
+            <TypographySmall>{props.project.targetAudience}</TypographySmall>
+          </li>
+        </ul>
+      </CardContent>
+    </Card>
   );
 }
