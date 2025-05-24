@@ -5,11 +5,13 @@ import { api } from "@server/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Copy, Info, Pencil, Plus, Target, Trash, Users } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { CreateExperimentDialog } from "@/components/experiments/create-experiment-dialog.tsx";
 import { ExperimentCard } from "@/components/experiments/experiment-card.tsx";
 import { DeleteProjectDialog } from "@/components/projects/delete-project-dialog.tsx";
+import { Accordion } from "@/components/ui/accordion.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog.tsx";
 import {
@@ -37,6 +39,8 @@ function RouteComponent() {
     onError: (error) => toast.error(error.message),
     onSuccess: () => navigate({ to: "/projects" }),
   });
+
+  const [accordeonValue, setAccordeonValue] = useState<string | undefined>();
 
   if (!project.data) return null;
 
@@ -118,16 +122,22 @@ function RouteComponent() {
       </section>
       <section className="space-y-4 col-span-2">
         <TypographyH4>Experiments</TypographyH4>
-        <ul className="space-y-2">
+        <Accordion
+          className="space-y-2"
+          collapsible
+          onValueChange={setAccordeonValue}
+          type="single"
+          value={accordeonValue}
+        >
           {experiments.data?.map((experiment) => (
-            <li key={experiment._id}>
-              <ExperimentCard
-                experiment={experiment}
-                projectName={project.data.name}
-              />
-            </li>
+            <ExperimentCard
+              accordeonValue={accordeonValue}
+              experiment={experiment}
+              key={experiment._id}
+              projectName={project.data.name}
+            />
           ))}
-        </ul>
+        </Accordion>
       </section>
     </main>
   );

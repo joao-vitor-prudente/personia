@@ -1,5 +1,6 @@
 import { useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
+import { type Doc } from "@server/dataModel";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/dialog.tsx";
 
 export function EditExperimentDialog(props: {
-  experiment: typeof api.experiments.getExperiment._returnType;
+  experiment: Doc<"experiments">;
 }) {
   const editExperiment = useMutation({
     mutationFn: useConvexMutation(api.experiments.editExperiment),
@@ -27,7 +28,7 @@ export function EditExperimentDialog(props: {
   const form = useExperimentForm({
     defaultValues: {
       name: props.experiment.name,
-      personas: props.experiment.personas.map((p) => p._id),
+      personas: props.experiment.personas,
       projectId: props.experiment.projectId,
     },
     projectId: props.experiment.projectId,

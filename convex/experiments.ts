@@ -28,19 +28,10 @@ export const listProjectExperiments = query({
   },
   handler: async (ctx, args) => {
     await getExperimentProject(ctx, args.projectId);
-    const experiments = await ctx.db
+    return await ctx.db
       .query("experiments")
       .withIndex("projectId", (q) => q.eq("projectId", args.projectId))
       .collect();
-    const personas = await getAllOrThrow(
-      ctx.db,
-      experiments.flatMap((e) => e.personas),
-    );
-
-    return experiments.map((e) => ({
-      ...e,
-      personas: personas.filter((p) => e.personas.includes(p._id)),
-    }));
   },
 });
 

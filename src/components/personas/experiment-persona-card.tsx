@@ -1,4 +1,4 @@
-import { type api } from "@server/api";
+import { type Doc } from "@server/dataModel";
 import { Link } from "@tanstack/react-router";
 import { BriefcaseBusiness, Cake, MapPin, Mars, Venus } from "lucide-react";
 
@@ -7,9 +7,7 @@ import {
   TypographySmall,
 } from "@/components/ui/typography.tsx";
 
-export function ExperimentPersonaCard(props: {
-  persona: typeof api.personas.getPersona._returnType;
-}) {
+export function ExperimentPersonaCard(props: { persona: Doc<"personas"> }) {
   return (
     <section className="grid grid-cols-[repeat(5,_1fr)_auto] items-center">
       <Link

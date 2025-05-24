@@ -1,6 +1,6 @@
 import { useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
-import { type Id } from "@server/dataModel";
+import { type Doc, type Id } from "@server/dataModel";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -23,7 +23,7 @@ export function CreateExperimentDialog(
     onCreate: (id: Id<"experiments">) => Promise<void>;
   } & (
     | {
-        fromExperiment: typeof api.experiments.getExperiment._returnType;
+        fromExperiment: Doc<"experiments">;
         projectId?: undefined;
       }
     | { fromExperiment?: undefined; projectId: Id<"projects"> }
@@ -43,7 +43,7 @@ export function CreateExperimentDialog(
     defaultValues: props.fromExperiment
       ? {
           name: props.fromExperiment.name,
-          personas: props.fromExperiment.personas.map((p) => p._id),
+          personas: props.fromExperiment.personas,
           projectId: props.fromExperiment.projectId,
         }
       : undefined,

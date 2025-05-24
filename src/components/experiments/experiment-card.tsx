@@ -1,12 +1,14 @@
-import { useConvexMutation } from "@convex-dev/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
-import { useMutation } from "@tanstack/react-query";
+import { type Doc } from "@server/dataModel";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ClipboardList,
   Clock,
   Copy,
   EllipsisVertical,
+  Loader,
   Pencil,
   Trash,
   User,
@@ -19,7 +21,6 @@ import { DeleteExperimentDialog } from "@/components/experiments/delete-experime
 import { EditExperimentDialog } from "@/components/experiments/edit-experiment-dialog.tsx";
 import { ExperimentPersonaCard } from "@/components/personas/experiment-persona-card.tsx";
 import {
-  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
@@ -38,9 +39,16 @@ import { TypographyH5, TypographyMuted } from "@/components/ui/typography.tsx";
 import { dateFormatter } from "@/lib/date.tsx";
 
 export function ExperimentCard(props: {
-  experiment: typeof api.experiments.getExperiment._returnType;
+  accordeonValue: string | undefined;
+  experiment: Doc<"experiments">;
   projectName: string;
 }) {
+  const experiment = useQuery({
+    ...convexQuery(api.experiments.getExperiment, {
+      id: props.experiment._id,
+    }),
+    enabled: props.accordeonValue === props.experiment._id,
+  });
   const navigate = useNavigate();
   const deleteExperiment = useMutation({
     mutationFn: useConvexMutation(api.experiments.deleteExperiment),
@@ -50,8 +58,8 @@ export function ExperimentCard(props: {
   const [copyDialogOpen, setCopyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   return (
-    <Accordion collapsible type="single">
-      <AccordionItem className="space-y-4" value={props.experiment._id}>
+    <>
+      <AccordionItem className="space-y-4 pt-2" value={props.experiment._id}>
         <section className="bg-card text-card-foreground grid grid-cols-[repeat(4,_1fr)_auto] items-center rounded-xl border p-6 shadow-sm">
           <Link
             className="underline-offset-4 hover:underline"
@@ -120,13 +128,17 @@ export function ExperimentCard(props: {
               <span>{props.experiment.name}</span>
               <span> Personas</span>
             </TypographyH5>
-            <ul className="space-y-4">
-              {props.experiment.personas.map((persona) => (
-                <li key={persona._id}>
-                  <ExperimentPersonaCard persona={persona} />
-                </li>
-              ))}
-            </ul>
+            {experiment.data ? (
+              <ul className="space-y-4">
+                {experiment.data.personas.map((persona) => (
+                  <li key={persona._id}>
+                    <ExperimentPersonaCard persona={persona} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <Loader className="mx-auto animate-spin" />
+            )}
           </section>
         </AccordionContent>
       </AccordionItem>
@@ -149,6 +161,6 @@ export function ExperimentCard(props: {
           name={props.experiment.name}
         />
       </Dialog>
-    </Accordion>
+    </>
   );
 }
