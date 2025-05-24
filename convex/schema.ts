@@ -9,6 +9,11 @@ export default defineSchema({
     personas: v.array(v.id("personas")),
     projectId: v.id("projects"),
   }).index("projectId", ["projectId"]),
+  messages: defineTable({
+    author: v.string(),
+    content: v.string(),
+    experimentId: v.id("experiments"),
+  }).index("experimentId", ["experimentId"]),
   personas: defineTable({
     background: v.string(),
     demographicProfile: v.object({
