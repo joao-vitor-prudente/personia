@@ -14,17 +14,16 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { CreateExperimentDialog } from "@/components/experiments/create-experiment-dialog.tsx";
 import { DeleteExperimentDialog } from "@/components/experiments/delete-experiment-dialog.tsx";
 import { EditExperimentDialog } from "@/components/experiments/edit-experiment-dialog.tsx";
+import { MessageCard } from "@/components/messages/message-card.tsx";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion.tsx";
+  MessageForm,
+  useMessageForm,
+} from "@/components/messages/message-form.tsx";
+import { Accordion } from "@/components/ui/accordion.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog.tsx";
 import {
@@ -33,14 +32,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
-import { useAppForm } from "@/components/ui/form.tsx";
 import {
   TypographyH4,
   TypographyMuted,
-  TypographyP,
   TypographySmall,
 } from "@/components/ui/typography.tsx";
-import { dateFormatter, timeFormatter } from "@/lib/date.ts";
 
 export const Route = createFileRoute("/_authenticated/experiments/$id")({
   component: RouteComponent,
@@ -69,21 +65,7 @@ function RouteComponent() {
     { initialNumItems: 5 },
   );
 
-  const createMessage = useMutation({
-    mutationFn: useConvexMutation(api.messages.sendMessage),
-    onError: (error) => toast.error(error.message),
-    onSuccess: () => {
-      sendMessageForm.reset();
-    },
-  });
-
-  const sendMessageForm = useAppForm({
-    defaultValues: { message: "" },
-    onSubmit: async ({ value }) => {
-      await createMessage.mutateAsync({ content: value.message, experimentId });
-    },
-    validators: { onSubmit: z.object({ message: z.string().min(1) }) },
-  });
+  const form = useMessageForm({ experimentId });
 
   if (!experiment.data) return null;
 
@@ -153,7 +135,7 @@ function RouteComponent() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {experiment.data.personas.map((p) => (
-                <DropdownMenuItem asChild key={p._id}>
+                <DropdownMenuItem asChild className="group" key={p._id}>
                   <Link
                     className="grid grid-cols-[auto_1fr_auto] items-center"
                     params={{ id: p._id }}
@@ -164,7 +146,7 @@ function RouteComponent() {
                       <TypographySmall>{p.name}</TypographySmall>
                       <TypographyMuted>{p.nickname}</TypographyMuted>
                     </div>
-                    <ExternalLink className="size-6 ml-8 self-start" />
+                    <ExternalLink className="size-6 ml-8 self-start opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                   </Link>
                 </DropdownMenuItem>
               ))}
@@ -172,100 +154,11 @@ function RouteComponent() {
           </DropdownMenu>
         </header>
         <Accordion collapsible type="single">
-          {messages.results.map((m) => (
-            <AccordionItem
-              className="flex flex-col gap-4"
-              key={m._id}
-              value={m._id}
-            >
-              <AccordionTrigger className="border rounded-lg px-4">
-                <div className="grid grid-cols-[1fr_auto] w-full">
-                  <TypographyMuted>
-                    <span>~</span>
-                    <span>{m.author}</span>
-                  </TypographyMuted>
-                  <TypographyMuted>
-                    <span>{timeFormatter.format(m._creationTime)}</span>
-                    <span> • </span>
-                    <span>{dateFormatter.format(m._creationTime)}</span>
-                  </TypographyMuted>
-                  <TypographyP className="col-span-2">{m.content}</TypographyP>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <Accordion
-                  className="flex flex-col gap-2"
-                  collapsible
-                  type="single"
-                >
-                  {m.replies.map((r) => (
-                    <AccordionItem
-                      className="border rounded-lg last:border px-4"
-                      key={r.author._id}
-                      value={r.author._id}
-                    >
-                      <AccordionTrigger disabled={r.status === "pending"}>
-                        {r.status === "pending" ? (
-                          <div>
-                            <span>~</span>
-                            <span>{r.author.name}</span>
-                            <span> is replying...</span>
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-[1fr_auto] w-full">
-                            <TypographyMuted>
-                              <span>~</span>
-                              <span>{r.author.name}</span>
-                            </TypographyMuted>
-                            <TypographyMuted>
-                              <span>{timeFormatter.format(r.finishedAt)}</span>
-                              <span>•</span>
-                              <span>{dateFormatter.format(r.finishedAt)}</span>
-                            </TypographyMuted>
-                          </div>
-                        )}
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        {r.status === "finished" ? (
-                          <TypographyP>{r.content}</TypographyP>
-                        ) : null}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </AccordionContent>
-            </AccordionItem>
+          {messages.results.map((message) => (
+            <MessageCard key={message._id} message={message} />
           ))}
         </Accordion>
-        <sendMessageForm.AppForm>
-          <form
-            className="relative"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void sendMessageForm.handleSubmit();
-            }}
-          >
-            <sendMessageForm.AppField name="message">
-              {(field) => (
-                <field.FormItem>
-                  <field.FormLabel className="sr-only">
-                    Send a message
-                  </field.FormLabel>
-                  <field.FormControl>
-                    <field.Textarea className="pr-24" />
-                  </field.FormControl>
-                  <field.FormMessage className="sr-only" />
-                </field.FormItem>
-              )}
-            </sendMessageForm.AppField>
-            <Button
-              className="absolute top-1/2 -translate-y-1/2 right-4"
-              type="submit"
-            >
-              Send
-            </Button>
-          </form>
-        </sendMessageForm.AppForm>
+        <MessageForm form={form} />
       </section>
     </main>
   );
