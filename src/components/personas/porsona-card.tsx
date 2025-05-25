@@ -75,7 +75,7 @@ export function PersonaCard(props: {
             </DropdownMenuItem>
             <Dialog>
               <DialogTrigger asChild>
-                <DropdownMenuItem>
+                <DropdownMenuItem preventDefault>
                   <Trash />
                   Delete
                 </DropdownMenuItem>

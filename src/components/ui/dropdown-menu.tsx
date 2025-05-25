@@ -67,10 +67,12 @@ function DropdownMenuGroup({
 function DropdownMenuItem({
   className,
   inset,
+  preventDefault,
   variant = "default",
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean;
+  preventDefault?: boolean;
   variant?: "default" | "destructive";
 }) {
   return (
@@ -82,6 +84,13 @@ function DropdownMenuItem({
       data-inset={inset}
       data-slot="dropdown-menu-item"
       data-variant={variant}
+      onSelect={
+        preventDefault
+          ? (e) => {
+              e.preventDefault();
+            }
+          : undefined
+      }
       {...props}
     />
   );
