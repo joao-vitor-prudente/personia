@@ -36,7 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
 import { TypographyH5, TypographyMuted } from "@/components/ui/typography.tsx";
-import { dateFormatter } from "@/lib/date.tsx";
+import { dateFormatter } from "@/lib/date.ts";
 
 export function ExperimentCard(props: {
   accordeonValue: string | undefined;

@@ -40,7 +40,7 @@ import {
   TypographyP,
   TypographySmall,
 } from "@/components/ui/typography.tsx";
-import { dateFormatter, timeFormatter } from "@/lib/date.tsx";
+import { dateFormatter, timeFormatter } from "@/lib/date.ts";
 
 export const Route = createFileRoute("/_authenticated/experiments/$id")({
   component: RouteComponent,
