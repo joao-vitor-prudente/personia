@@ -2,6 +2,7 @@ import { useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
 import { type Doc } from "@server/dataModel";
 import { useMutation } from "@tanstack/react-query";
+import { useRef } from "react";
 import { toast } from "sonner";
 
 import {
@@ -46,6 +47,8 @@ export function EditExperimentDialog(props: {
     },
   });
 
+  const formRef = useRef<HTMLFormElement>(null);
+
   return (
     <DialogContent>
       <DialogHeader>
@@ -54,13 +57,13 @@ export function EditExperimentDialog(props: {
           Chose a new name and a new set of personas for your experiment
         </DialogDescription>
       </DialogHeader>
-      <ExperimentForm form={form} />
+      <ExperimentForm form={form} ref={formRef} />
       <DialogFooter>
         <DialogClose asChild>
           <Button variant="outline">Cancel</Button>
         </DialogClose>
         <DialogClose asChild>
-          <Button onClick={() => void form.handleSubmit()}>Edit</Button>
+          <Button onClick={() => formRef.current?.requestSubmit()}>Edit</Button>
         </DialogClose>
       </DialogFooter>
     </DialogContent>

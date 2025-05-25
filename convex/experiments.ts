@@ -39,7 +39,7 @@ export const getExperiment = query({
 export const createExperiment = mutation({
   args: {
     name: v.string(),
-    personas: v.array(v.id("personas")),
+    personaIds: v.array(v.id("personas")),
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
@@ -54,7 +54,7 @@ export const createExperiment = mutation({
       organizationId: identity.organization.id,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       owner: identity.email!,
-      personaIds: args.personas,
+      personaIds: args.personaIds,
       projectId: args.projectId,
     });
   },

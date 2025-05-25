@@ -2,6 +2,7 @@ import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@server/api";
 import { type Id } from "@server/dataModel";
 import { useQuery } from "@tanstack/react-query";
+import { type RefObject } from "react";
 import { z } from "zod";
 
 import { useAppForm } from "@/components/ui/form.tsx";
@@ -17,6 +18,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export function ExperimentForm(props: {
   form: ReturnType<typeof useExperimentForm>;
+  ref: RefObject<HTMLFormElement | null>;
 }) {
   const personas = useQuery({
     ...convexQuery(api.personas.listPersonas, { search: "", sorting: "asc" }),
@@ -29,7 +31,14 @@ export function ExperimentForm(props: {
 
   return (
     <props.form.AppForm>
-      <form className="space-y-4">
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void props.form.handleSubmit();
+        }}
+        ref={props.ref}
+      >
         <props.form.AppField name="name">
           {(field) => (
             <field.FormItem>
