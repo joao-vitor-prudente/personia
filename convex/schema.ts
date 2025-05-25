@@ -6,7 +6,7 @@ export default defineSchema({
     name: v.string(),
     organizationId: v.string(),
     owner: v.string(),
-    personas: v.array(v.id("personas")),
+    personaIds: v.array(v.id("personas")),
     projectId: v.id("projects"),
   }).index("projectId", ["projectId"]),
   messages: defineTable({
@@ -16,13 +16,13 @@ export default defineSchema({
     replies: v.array(
       v.union(
         v.object({
-          author: v.id("personas"),
+          authorId: v.id("personas"),
           content: v.string(),
           finishedAt: v.number(),
           status: v.literal("finished"),
         }),
         v.object({
-          author: v.id("personas"),
+          authorId: v.id("personas"),
           status: v.literal("pending"),
         }),
       ),

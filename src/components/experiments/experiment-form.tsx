@@ -9,7 +9,7 @@ import { z2 } from "@/lib/zod-extensions.ts";
 
 const formSchema = z.object({
   name: z.string(),
-  personas: z.array(z2.id("personas")),
+  personaIds: z.array(z2.id("personas")),
   projectId: z2.id("projects"),
 });
 
@@ -44,7 +44,7 @@ export function ExperimentForm(props: {
             </field.FormItem>
           )}
         </props.form.AppField>
-        <props.form.AppField name="personas">
+        <props.form.AppField name="personaIds">
           {(field) => (
             <field.FormItem>
               <field.FormLabel>Name</field.FormLabel>
@@ -73,7 +73,7 @@ export function useExperimentForm(props: {
 }) {
   const defaultValues: FormData = {
     name: "",
-    personas: [],
+    personaIds: [],
     projectId: props.projectId,
   };
   return useAppForm({

@@ -17,7 +17,7 @@ export const listMessages = query({
     if (experiment.organizationId !== identity.organization.id)
       throw new Error("User is not authorized to view this experiment");
 
-    const personas = await getAllOrThrow(ctx.db, experiment.personas);
+    const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
 
     const messages = await ctx.db
       .query("messages")
@@ -30,7 +30,7 @@ export const listMessages = query({
       replies: message.replies.map((reply) => ({
         ...reply,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        author: personas.find((p) => p._id === reply.author)!,
+        author: personas.find((p) => p._id === reply.authorId)!,
       })),
     }));
     return { ...messages, page };
@@ -53,8 +53,8 @@ export const sendMessage = mutation({
       author: identity.email!,
       content: args.content,
       experimentId: args.experimentId,
-      replies: experiment.personas.map((p) => ({
-        author: p,
+      replies: experiment.personaIds.map((p) => ({
+        authorId: p,
         status: "pending" as const,
       })),
     });

@@ -28,7 +28,7 @@ export function EditExperimentDialog(props: {
   const form = useExperimentForm({
     defaultValues: {
       name: props.experiment.name,
-      personas: props.experiment.personas,
+      personaIds: props.experiment.personaIds,
       projectId: props.experiment.projectId,
     },
     projectId: props.experiment.projectId,

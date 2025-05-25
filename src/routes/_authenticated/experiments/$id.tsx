@@ -87,11 +87,6 @@ function RouteComponent() {
 
   if (!experiment.data) return null;
 
-  const experimentWithoutPersonas = {
-    ...experiment.data,
-    personas: experiment.data.personas.map((p) => p._id),
-  };
-
   return (
     <main className="py-4 px-8 grid grid-cols-[2fr_1fr] gap-x-8 gap-y-4 grid-rows-[auto_1fr] grow">
       <header className="grid grid-cols-[1fr_auto] col-span-2">
@@ -123,7 +118,7 @@ function RouteComponent() {
                   </Button>
                 </DialogTrigger>
                 <CreateExperimentDialog
-                  fromExperiment={experimentWithoutPersonas}
+                  fromExperiment={experiment.data}
                   onCreate={(id) =>
                     navigate({ params: { id }, to: "/projects/$id" })
                   }
@@ -138,7 +133,7 @@ function RouteComponent() {
                     Edit
                   </Button>
                 </DialogTrigger>
-                <EditExperimentDialog experiment={experimentWithoutPersonas} />
+                <EditExperimentDialog experiment={experiment.data} />
               </Dialog>
             </li>
           </ul>

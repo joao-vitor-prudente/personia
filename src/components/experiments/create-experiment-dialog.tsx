@@ -43,7 +43,7 @@ export function CreateExperimentDialog(
     defaultValues: props.fromExperiment
       ? {
           name: props.fromExperiment.name,
-          personas: props.fromExperiment.personas,
+          personas: props.fromExperiment.personaIds,
           projectId: props.fromExperiment.projectId,
         }
       : undefined,

@@ -31,7 +31,7 @@ export const getExperiment = query({
     if (!experiment) throw new Error("Experiment not found");
     if (experiment.organizationId !== identity.organization.id)
       throw new Error("User is not authorized to view this experiment");
-    const personas = await getAllOrThrow(ctx.db, experiment.personas);
+    const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
     return { ...experiment, personas };
   },
 });
@@ -54,7 +54,7 @@ export const createExperiment = mutation({
       organizationId: identity.organization.id,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       owner: identity.email!,
-      personas: args.personas,
+      personaIds: args.personas,
       projectId: args.projectId,
     });
   },
@@ -78,7 +78,7 @@ export const editExperiment = mutation({
   args: {
     id: v.id("experiments"),
     name: v.string(),
-    personas: v.array(v.id("personas")),
+    personaIds: v.array(v.id("personas")),
   },
   handler: async (ctx, { id, ...args }) => {
     const identity = await getIdentityOrThrow(ctx);
