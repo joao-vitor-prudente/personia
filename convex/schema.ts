@@ -13,6 +13,20 @@ export default defineSchema({
     author: v.string(),
     content: v.string(),
     experimentId: v.id("experiments"),
+    replies: v.array(
+      v.union(
+        v.object({
+          author: v.id("personas"),
+          content: v.string(),
+          finishedAt: v.number(),
+          status: v.literal("finished"),
+        }),
+        v.object({
+          author: v.id("personas"),
+          status: v.literal("pending"),
+        }),
+      ),
+    ),
   }).index("experimentId", ["experimentId"]),
   personas: defineTable({
     background: v.string(),
