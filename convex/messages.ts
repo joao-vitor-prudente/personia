@@ -3,6 +3,7 @@ import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
 import { mutation, query } from "./context";
+import { getExperimentHelper } from "./experiments";
 
 export const listMessages = query({
   args: {
@@ -10,10 +11,7 @@ export const listMessages = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    const experiment = await ctx.db.get(args.experimentId);
-    if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this experiment");
+    const experiment = await getExperimentHelper(ctx, args.experimentId);
 
     const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
 
@@ -41,10 +39,7 @@ export const sendMessage = mutation({
     experimentId: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    const experiment = await ctx.db.get(args.experimentId);
-    if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this experiment");
+    const experiment = await getExperimentHelper(ctx, args.experimentId);
     await ctx.db.insert("messages", {
       author: ctx.identity.email,
       content: args.content,

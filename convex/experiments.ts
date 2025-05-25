@@ -1,17 +1,17 @@
 import { getAllOrThrow } from "convex-helpers/server/relationships";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 
-import { mutation, query } from "./context";
+import type { Id } from "./_generated/dataModel";
+
+import { mutation, type MutationCtx, query, type QueryCtx } from "./context";
+import { getProjectHelper } from "./projects";
 
 export const listProjectExperiments = query({
   args: {
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.projectId);
-    if (!project) throw new Error("Project not found");
-    if (project.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this project");
+    await getProjectHelper(ctx, args.projectId);
     return await ctx.db
       .query("experiments")
       .withIndex("projectId", (q) => q.eq("projectId", args.projectId))
@@ -24,10 +24,7 @@ export const getExperiment = query({
     id: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    const experiment = await ctx.db.get(args.id);
-    if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this experiment");
+    const experiment = await getExperimentHelper(ctx, args.id);
     const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
     return { ...experiment, personas };
   },
@@ -40,11 +37,7 @@ export const createExperiment = mutation({
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.projectId);
-    if (!project) throw new Error("Project not found");
-    if (project.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this project");
-
+    await getProjectHelper(ctx, args.projectId);
     return await ctx.db.insert("experiments", {
       name: args.name,
       organizationId: ctx.identity.organization.id,
@@ -61,10 +54,7 @@ export const deleteExperiment = mutation({
     id: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    const experiment = await ctx.db.get(args.id);
-    if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to delete this experiment");
+    await getExperimentHelper(ctx, args.id);
     await ctx.db.delete(args.id);
   },
 });
@@ -76,10 +66,18 @@ export const editExperiment = mutation({
     personaIds: v.array(v.id("personas")),
   },
   handler: async (ctx, { id, ...args }) => {
-    const experiment = await ctx.db.get(id);
-    if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to edit this experiment");
+    await getExperimentHelper(ctx, id);
     await ctx.db.patch(id, args);
   },
 });
+
+export async function getExperimentHelper(
+  ctx: MutationCtx | QueryCtx,
+  id: Id<"experiments">,
+) {
+  const experiment = await ctx.db.get(id);
+  if (!experiment) throw new ConvexError("Experiment not found");
+  if (experiment.organizationId !== ctx.identity.organization.id)
+    throw new ConvexError("User is not authorized to view this experiment");
+  return experiment;
+}

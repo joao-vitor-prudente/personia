@@ -1,6 +1,7 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 
-import { mutation, query } from "./context";
+import { type Id } from "./_generated/dataModel";
+import { mutation, type MutationCtx, query, type QueryCtx } from "./context";
 
 export const createProject = mutation({
   args: {
@@ -41,11 +42,7 @@ export const listProjects = query({
 export const getProject = query({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.id);
-    if (!project) throw new Error("Project not found");
-    if (project.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this project");
-    return project;
+    return await getProjectHelper(ctx, args.id);
   },
 });
 
@@ -59,10 +56,7 @@ export const editProject = mutation({
     targetAudience: v.string(),
   },
   handler: async (ctx, { id, ...args }) => {
-    const project = await ctx.db.get(id);
-    if (!project) throw new Error("Project not found");
-    if (project.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to edit this project");
+    await getProjectHelper(ctx, id);
     await ctx.db.patch(id, args);
   },
 });
@@ -70,10 +64,18 @@ export const editProject = mutation({
 export const deleteProject = mutation({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
-    const project = await ctx.db.get(args.id);
-    if (!project) throw new Error("Project not found");
-    if (project.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to delete this project");
+    await getProjectHelper(ctx, args.id);
     await ctx.db.delete(args.id);
   },
 });
+
+export async function getProjectHelper(
+  ctx: MutationCtx | QueryCtx,
+  id: Id<"projects">,
+) {
+  const project = await ctx.db.get(id);
+  if (!project) throw new ConvexError("Project not found");
+  if (project.organizationId !== ctx.identity.organization.id)
+    throw new ConvexError("User is not authorized to view this project");
+  return project;
+}

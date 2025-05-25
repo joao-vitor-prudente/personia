@@ -1,6 +1,7 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 
-import { mutation, query } from "./context";
+import { type Id } from "./_generated/dataModel";
+import { mutation, type MutationCtx, query, type QueryCtx } from "./context";
 
 export const createPersona = mutation({
   args: {
@@ -49,11 +50,7 @@ export const listPersonas = query({
 export const getPersona = query({
   args: { id: v.id("personas") },
   handler: async (ctx, args) => {
-    const persona = await ctx.db.get(args.id);
-    if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to view this persona");
-    return persona;
+    return await getPersonaHelper(ctx, args.id);
   },
 });
 
@@ -73,10 +70,7 @@ export const editPersona = mutation({
     quote: v.string(),
   },
   handler: async (ctx, { id, ...args }) => {
-    const persona = await ctx.db.get(id);
-    if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to edit this persona");
+    await getPersonaHelper(ctx, id);
     await ctx.db.patch(id, args);
   },
 });
@@ -84,10 +78,18 @@ export const editPersona = mutation({
 export const deletePersona = mutation({
   args: { id: v.id("personas") },
   handler: async (ctx, args) => {
-    const persona = await ctx.db.get(args.id);
-    if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId !== ctx.identity.organization.id)
-      throw new Error("User is not authorized to delete this persona");
+    await getPersonaHelper(ctx, args.id);
     await ctx.db.delete(args.id);
   },
 });
+
+async function getPersonaHelper(
+  ctx: MutationCtx | QueryCtx,
+  id: Id<"personas">,
+) {
+  const persona = await ctx.db.get(id);
+  if (!persona) throw new ConvexError("Persona not found");
+  if (persona.organizationId !== ctx.identity.organization.id)
+    throw new ConvexError("User is not authorized to view this persona");
+  return persona;
+}
