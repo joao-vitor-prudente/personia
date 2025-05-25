@@ -1,7 +1,6 @@
 import { v } from "convex/values";
 
-import { mutation, query } from "./_generated/server";
-import { getIdentityOrThrow } from "./helpers";
+import { mutation, query } from "./context";
 
 export const createProject = mutation({
   args: {
@@ -12,10 +11,9 @@ export const createProject = mutation({
     targetAudience: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     return await ctx.db.insert("projects", {
       ...args,
-      organizationId: identity.organization.id,
+      organizationId: ctx.identity.organization.id,
     });
   },
 });
@@ -26,11 +24,10 @@ export const listProjects = query({
     sorting: v.union(v.literal("asc"), v.literal("desc")),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const projects = await ctx.db
       .query("projects")
       .withIndex("organizationId", (q) =>
-        q.eq("organizationId", identity.organization.id),
+        q.eq("organizationId", ctx.identity.organization.id),
       )
       .order(args.sorting)
       .collect();
@@ -44,10 +41,9 @@ export const listProjects = query({
 export const getProject = query({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const project = await ctx.db.get(args.id);
     if (!project) throw new Error("Project not found");
-    if (project.organizationId !== identity.organization.id)
+    if (project.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this project");
     return project;
   },
@@ -63,10 +59,9 @@ export const editProject = mutation({
     targetAudience: v.string(),
   },
   handler: async (ctx, { id, ...args }) => {
-    const identity = await getIdentityOrThrow(ctx);
     const project = await ctx.db.get(id);
     if (!project) throw new Error("Project not found");
-    if (project.organizationId !== identity.organization.id)
+    if (project.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to edit this project");
     await ctx.db.patch(id, args);
   },
@@ -75,10 +70,9 @@ export const editProject = mutation({
 export const deleteProject = mutation({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const project = await ctx.db.get(args.id);
     if (!project) throw new Error("Project not found");
-    if (project.organizationId !== identity.organization.id)
+    if (project.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to delete this project");
     await ctx.db.delete(args.id);
   },

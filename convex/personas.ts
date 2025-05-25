@@ -1,7 +1,6 @@
 import { v } from "convex/values";
 
-import { mutation, query } from "./_generated/server";
-import { getIdentityOrThrow } from "./helpers";
+import { mutation, query } from "./context";
 
 export const createPersona = mutation({
   args: {
@@ -18,10 +17,9 @@ export const createPersona = mutation({
     quote: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     return await ctx.db.insert("personas", {
       ...args,
-      organizationId: identity.organization.id,
+      organizationId: ctx.identity.organization.id,
     });
   },
 });
@@ -32,11 +30,10 @@ export const listPersonas = query({
     sorting: v.union(v.literal("asc"), v.literal("desc")),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const personas = await ctx.db
       .query("personas")
       .withIndex("organizationId", (q) =>
-        q.eq("organizationId", identity.organization.id),
+        q.eq("organizationId", ctx.identity.organization.id),
       )
       .order(args.sorting)
       .collect();
@@ -52,10 +49,9 @@ export const listPersonas = query({
 export const getPersona = query({
   args: { id: v.id("personas") },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const persona = await ctx.db.get(args.id);
     if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId !== identity.organization.id)
+    if (persona.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this persona");
     return persona;
   },
@@ -77,10 +73,9 @@ export const editPersona = mutation({
     quote: v.string(),
   },
   handler: async (ctx, { id, ...args }) => {
-    const identity = await getIdentityOrThrow(ctx);
     const persona = await ctx.db.get(id);
     if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId !== identity.organization.id)
+    if (persona.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to edit this persona");
     await ctx.db.patch(id, args);
   },
@@ -89,10 +84,9 @@ export const editPersona = mutation({
 export const deletePersona = mutation({
   args: { id: v.id("personas") },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const persona = await ctx.db.get(args.id);
     if (!persona) throw new Error("Persona not found");
-    if (persona.organizationId !== identity.organization.id)
+    if (persona.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to delete this persona");
     await ctx.db.delete(args.id);
   },

@@ -1,18 +1,16 @@
 import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { v } from "convex/values";
 
-import { mutation, query } from "./_generated/server";
-import { getIdentityOrThrow } from "./helpers";
+import { mutation, query } from "./context";
 
 export const listProjectExperiments = query({
   args: {
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
-    if (project.organizationId !== identity.organization.id)
+    if (project.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this project");
     return await ctx.db
       .query("experiments")
@@ -26,10 +24,9 @@ export const getExperiment = query({
     id: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const experiment = await ctx.db.get(args.id);
     if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== identity.organization.id)
+    if (experiment.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this experiment");
     const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
     return { ...experiment, personas };
@@ -43,17 +40,16 @@ export const createExperiment = mutation({
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
-    if (project.organizationId !== identity.organization.id)
+    if (project.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this project");
 
     return await ctx.db.insert("experiments", {
       name: args.name,
-      organizationId: identity.organization.id,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      owner: identity.email!,
+      organizationId: ctx.identity.organization.id,
+
+      owner: ctx.identity.email,
       personaIds: args.personaIds,
       projectId: args.projectId,
     });
@@ -65,10 +61,9 @@ export const deleteExperiment = mutation({
     id: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const experiment = await ctx.db.get(args.id);
     if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== identity.organization.id)
+    if (experiment.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to delete this experiment");
     await ctx.db.delete(args.id);
   },
@@ -81,10 +76,9 @@ export const editExperiment = mutation({
     personaIds: v.array(v.id("personas")),
   },
   handler: async (ctx, { id, ...args }) => {
-    const identity = await getIdentityOrThrow(ctx);
     const experiment = await ctx.db.get(id);
     if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== identity.organization.id)
+    if (experiment.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to edit this experiment");
     await ctx.db.patch(id, args);
   },

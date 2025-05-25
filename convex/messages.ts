@@ -2,8 +2,7 @@ import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
-import { mutation, query } from "./_generated/server";
-import { getIdentityOrThrow } from "./helpers";
+import { mutation, query } from "./context";
 
 export const listMessages = query({
   args: {
@@ -11,10 +10,9 @@ export const listMessages = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const experiment = await ctx.db.get(args.experimentId);
     if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== identity.organization.id)
+    if (experiment.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this experiment");
 
     const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
@@ -43,14 +41,12 @@ export const sendMessage = mutation({
     experimentId: v.id("experiments"),
   },
   handler: async (ctx, args) => {
-    const identity = await getIdentityOrThrow(ctx);
     const experiment = await ctx.db.get(args.experimentId);
     if (!experiment) throw new Error("Experiment not found");
-    if (experiment.organizationId !== identity.organization.id)
+    if (experiment.organizationId !== ctx.identity.organization.id)
       throw new Error("User is not authorized to view this experiment");
     await ctx.db.insert("messages", {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      author: identity.email!,
+      author: ctx.identity.email,
       content: args.content,
       experimentId: args.experimentId,
       replies: experiment.personaIds.map((p) => ({
