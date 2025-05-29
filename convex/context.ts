@@ -43,6 +43,7 @@ async function requireAuth(
   const identity = await ctx.auth.getUserIdentity();
   if (identity === null) throw new ConvexError("User is not signed in");
   const [id, role] = Object.entries(identity.organizations)[0];
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return { ...identity, email: identity.email!, organization: { id, role } };
+  if (identity.email === undefined)
+    throw new ConvexError("User does not have an email");
+  return { ...identity, email: identity.email, organization: { id, role } };
 }

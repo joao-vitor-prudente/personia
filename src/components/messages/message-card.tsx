@@ -13,7 +13,10 @@ export function MessageCard(props: {
   message: (typeof api.messages.listMessages._returnType)["page"][number];
 }) {
   return (
-    <AccordionItem className="flex flex-col gap-4" value={props.message._id}>
+    <AccordionItem
+      className="flex flex-col gap-4 border-none"
+      value={props.message._id}
+    >
       <AccordionTrigger className="border rounded-lg px-4">
         <div className="grid grid-cols-[1fr_auto] w-full">
           <TypographyMuted>
