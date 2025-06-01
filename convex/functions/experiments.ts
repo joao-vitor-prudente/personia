@@ -1,4 +1,7 @@
-import { getAllOrThrow } from "convex-helpers/server/relationships";
+import {
+  getAllOrThrow,
+  getManyFrom,
+} from "convex-helpers/server/relationships";
 import { v } from "convex/values";
 
 import { mutation, query } from "../context";
@@ -11,10 +14,25 @@ export const listProjectExperiments = query({
   },
   handler: async (ctx, args) => {
     await getProjectHelper(ctx, args.projectId);
-    return await ctx.db
-      .query("experiments")
-      .withIndex("projectId", (q) => q.eq("projectId", args.projectId))
-      .collect();
+    const experiments = await getManyFrom(
+      ctx.db,
+      "experiments",
+      "projectId",
+      args.projectId,
+    );
+
+    return await Promise.all(
+      experiments.map(async (experiment) => {
+        const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
+        const assistants = await getManyFrom(
+          ctx.db,
+          "assistants",
+          "experimentId",
+          experiment._id,
+        );
+        return { ...experiment, assistants, personas };
+      }),
+    );
   },
 });
 

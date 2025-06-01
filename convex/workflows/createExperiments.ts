@@ -58,14 +58,32 @@ export const createExperimentWorkflow = workflow.define({
       internal.workflows.createExperiments._createExperiment,
       args,
     );
-    const assistantIds = await step.runAction(
-      internal.workflows.createExperiments.createOpenaiAssistants,
-      { experiment: { _id: experimentId, name: args.name }, personas, project },
-    );
-    await step.runMutation(
-      internal.workflows.createExperiments.createAssistants,
-      { assistantIds, experimentId, projectId: args.projectId },
-    );
+    const tasks = personas.map(async (persona) => {
+      const assistantId = await step.runMutation(
+        internal.workflows.createExperiments.createPendingAssistant,
+        {
+          experimentId,
+          personaId: persona._id,
+          projectId: project._id,
+        },
+      );
+      const openaiAssistantId = await step.runAction(
+        internal.workflows.createExperiments.createOpenaiAssistant,
+        {
+          experiment: { _id: experimentId, name: args.name },
+          persona,
+          project,
+        },
+      );
+      await step.runMutation(
+        internal.workflows.createExperiments.updateAssistantStatus,
+        {
+          assistantId,
+          openaiAssistantId,
+        },
+      );
+    });
+    await Promise.all(tasks);
   },
 });
 
@@ -117,51 +135,53 @@ export const getProject = internalQuery({
   },
 });
 
-export const createAssistants = internalMutation({
+export const createPendingAssistant = internalMutation({
   args: {
-    assistantIds: v.array(
-      v.object({ assistantId: v.string(), personaId: v.id("personas") }),
-    ),
     experimentId: v.id("experiments"),
+    personaId: v.id("personas"),
     projectId: v.id("projects"),
   },
   handler: async (ctx, args) => {
-    const tasks = args.assistantIds.map((ids) =>
-      ctx.db.insert("assistants", {
-        experimentId: args.experimentId,
-        openaiAssistantId: ids.assistantId,
-        personaId: ids.personaId,
-        projectId: args.projectId,
-      }),
-    );
-    return await Promise.all(tasks);
+    return await ctx.db.insert("assistants", {
+      ...args,
+      openai: { status: "pending" },
+    });
   },
 });
 
-export const createOpenaiAssistants = internalAction({
+export const updateAssistantStatus = internalMutation({
+  args: {
+    assistantId: v.id("assistants"),
+    openaiAssistantId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.assistantId, {
+      openai: { assistantId: args.assistantId, status: "finished" },
+    });
+  },
+});
+
+export const createOpenaiAssistant = internalAction({
   args: {
     experiment: v.object({ _id: v.id("experiments"), name: v.string() }),
-    personas: v.array(doc(schema, "personas")),
+    persona: doc(schema, "personas"),
     project: doc(schema, "projects"),
   },
   handler: async (ctx, args) => {
-    const tasks = args.personas.map(async (persona) => {
-      const assistant = await ctx.openai.beta.assistants.create({
-        description: templateAssistantDescription(
-          persona,
-          args.project,
-          args.experiment,
-        ),
-        instructions: templateAssistantInstructions(
-          persona,
-          args.project,
-          args.experiment,
-        ),
-        model,
-        name: templateAssistantName(persona, args.project, args.experiment),
-      });
-      return { assistantId: assistant.id, personaId: persona._id };
+    const assistant = await ctx.openai.beta.assistants.create({
+      description: templateAssistantDescription(
+        args.persona,
+        args.project,
+        args.experiment,
+      ),
+      instructions: templateAssistantInstructions(
+        args.persona,
+        args.project,
+        args.experiment,
+      ),
+      model,
+      name: templateAssistantName(args.persona, args.project, args.experiment),
     });
-    return await Promise.all(tasks);
+    return assistant.id;
   },
 });

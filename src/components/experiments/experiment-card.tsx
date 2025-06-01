@@ -1,14 +1,12 @@
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@server/api";
-import { type Doc } from "@server/dataModel";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import {
   ClipboardList,
   Clock,
   Copy,
   EllipsisVertical,
-  Loader,
   Pencil,
   Trash,
   User,
@@ -34,36 +32,44 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
+import { EllipsisLoader } from "@/components/ui/ellipsis-loader.tsx";
 import { TypographyH5, TypographyMuted } from "@/components/ui/typography.tsx";
 import { dateFormatter } from "@/lib/date.ts";
 
 export function ExperimentCard(props: {
-  accordeonValue: string | undefined;
-  experiment: Doc<"experiments">;
+  accordionValue: string | undefined;
+  experiment: (typeof api.functions.experiments.listProjectExperiments._returnType)[number];
   projectName: string;
 }) {
-  const experiment = useQuery({
-    ...convexQuery(api.functions.experiments.getExperiment, {
-      id: props.experiment._id,
-    }),
-    enabled: props.accordeonValue === props.experiment._id,
-  });
-  const navigate = useNavigate();
   const deleteExperiment = useMutation({
     mutationFn: useConvexMutation(api.functions.experiments.deleteExperiment),
     onError: (error) => toast.error(error.message),
   });
 
+  const hasPendingAssistants = props.experiment.assistants.some(
+    (assistant) => assistant.openai.status === "pending",
+  );
+
   return (
     <AccordionItem className="space-y-4 pt-2" value={props.experiment._id}>
       <section className="bg-card text-card-foreground grid grid-cols-[repeat(4,_1fr)_auto] items-center rounded-xl border p-6 shadow-sm">
-        <Link
-          className="underline-offset-4 hover:underline"
-          params={{ id: props.experiment._id }}
-          to="/experiments/$id"
-        >
-          <TypographyH5>{props.experiment.name}</TypographyH5>
-        </Link>
+        <div>
+          <Link
+            aria-disabled={hasPendingAssistants}
+            className="underline-offset-4 aria-[disabled=false]:hover:underline"
+            disabled={hasPendingAssistants}
+            params={{ id: props.experiment._id }}
+            to="/experiments/$id"
+          >
+            <TypographyH5>{props.experiment.name}</TypographyH5>
+          </Link>
+          {hasPendingAssistants ? (
+            <TypographyMuted>
+              <span>Creating assistants</span>
+              <EllipsisLoader />
+            </TypographyMuted>
+          ) : null}
+        </div>
         <TypographyMuted className="flex gap-2">
           <User />
           <span>{props.experiment.owner}</span>
@@ -104,12 +110,7 @@ export function ExperimentCard(props: {
                       <span>Copy</span>
                     </DropdownMenuItem>
                   </DialogTrigger>
-                  <CreateExperimentDialog
-                    fromExperiment={props.experiment}
-                    onCreate={(id) =>
-                      navigate({ params: { id }, to: "/experiments/$id" })
-                    }
-                  />
+                  <CreateExperimentDialog fromExperiment={props.experiment} />
                 </Dialog>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -137,17 +138,21 @@ export function ExperimentCard(props: {
             <span>{props.experiment.name}</span>
             <span> Personas</span>
           </TypographyH5>
-          {experiment.data ? (
-            <ul className="space-y-4">
-              {experiment.data.personas.map((persona) => (
+          <ul className="space-y-4">
+            {props.experiment.personas.map((persona) => {
+              const assistant = props.experiment.assistants.find(
+                (assistant) => assistant.personaId === persona._id,
+              );
+              return (
                 <li key={persona._id}>
-                  <ExperimentPersonaCard persona={persona} />
+                  <ExperimentPersonaCard
+                    isPending={assistant?.openai.status === "pending"}
+                    persona={persona}
+                  />
                 </li>
-              ))}
-            </ul>
-          ) : (
-            <Loader className="mx-auto animate-spin" />
-          )}
+              );
+            })}
+          </ul>
         </section>
       </AccordionContent>
     </AccordionItem>

@@ -42,7 +42,7 @@ function RouteComponent() {
     onSuccess: () => navigate({ to: "/projects" }),
   });
 
-  const [accordeonValue, setAccordeonValue] = useState<string | undefined>();
+  const [accordionValue, setAccordionValue] = useState<string | undefined>();
 
   if (!project.data) return null;
 
@@ -95,9 +95,7 @@ function RouteComponent() {
                     Create new experiment
                   </Button>
                 </DialogTrigger>
-                <CreateExperimentDialog
-                  projectId={projectId}
-                />
+                <CreateExperimentDialog projectId={projectId} />
               </Dialog>
             </li>
           </ul>
@@ -124,13 +122,13 @@ function RouteComponent() {
         <Accordion
           className="space-y-2"
           collapsible
-          onValueChange={setAccordeonValue}
+          onValueChange={setAccordionValue}
           type="single"
-          value={accordeonValue}
+          value={accordionValue}
         >
           {experiments.data?.map((experiment) => (
             <ExperimentCard
-              accordeonValue={accordeonValue}
+              accordionValue={accordionValue}
               experiment={experiment}
               key={experiment._id}
               projectName={project.data.name}

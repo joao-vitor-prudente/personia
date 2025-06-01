@@ -4,14 +4,24 @@ import { v } from "convex/values";
 export default defineSchema({
   assistants: defineTable({
     experimentId: v.id("experiments"),
-    openaiAssistantId: v.string(),
+    openai: v.union(
+      v.object({
+        assistantId: v.string(),
+        status: v.literal("finished"),
+      }),
+      v.object({
+        status: v.literal("pending"),
+      }),
+    ),
     personaId: v.id("personas"),
     projectId: v.id("projects"),
-  }).index("project_experiment_persona", [
-    "personaId",
-    "projectId",
-    "experimentId",
-  ]),
+  })
+    .index("experimentId", ["experimentId"])
+    .index("project_experiment_persona", [
+      "personaId",
+      "projectId",
+      "experimentId",
+    ]),
   experiments: defineTable({
     name: v.string(),
     organizationId: v.string(),
