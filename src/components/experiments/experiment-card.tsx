@@ -43,14 +43,14 @@ export function ExperimentCard(props: {
   projectName: string;
 }) {
   const experiment = useQuery({
-    ...convexQuery(api.experiments.getExperiment, {
+    ...convexQuery(api.functions.experiments.getExperiment, {
       id: props.experiment._id,
     }),
     enabled: props.accordeonValue === props.experiment._id,
   });
   const navigate = useNavigate();
   const deleteExperiment = useMutation({
-    mutationFn: useConvexMutation(api.experiments.deleteExperiment),
+    mutationFn: useConvexMutation(api.functions.experiments.deleteExperiment),
     onError: (error) => toast.error(error.message),
   });
 

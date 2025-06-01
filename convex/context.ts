@@ -5,10 +5,14 @@ import {
   customQuery,
 } from "convex-helpers/server/customFunctions";
 import { ConvexError } from "convex/values";
+import { OpenAI } from "openai";
 
 import {
   action as baseAction,
   type ActionCtx as BaseActionCtx,
+  internalAction as baseInternalAction,
+  internalMutation as baseInternalMutation,
+  internalQuery as baseInternalQuery,
   mutation as baseMutation,
   type MutationCtx as BaseMutationCtx,
   query as baseQuery,
@@ -16,10 +20,22 @@ import {
 } from "./_generated/server";
 
 export const query = customQuery(baseQuery, customCtx(getCustomCtx));
+export const internalQuery = customQuery(
+  baseInternalQuery,
+  customCtx(getCustomCtx),
+);
 
 export const mutation = customMutation(baseMutation, customCtx(getCustomCtx));
+export const internalMutation = customMutation(
+  baseInternalMutation,
+  customCtx(getCustomCtx),
+);
 
 export const action = customAction(baseAction, customCtx(getCustomCtx));
+export const internalAction = customAction(
+  baseInternalAction,
+  customCtx(getCustomCtx),
+);
 
 export type ActionCtx = Context<BaseActionCtx>;
 export type MutationCtx = Context<BaseMutationCtx>;
@@ -28,13 +44,17 @@ export type QueryCtx = Context<BaseQueryCtx>;
 type Context<BaseCtx extends BaseActionCtx | BaseMutationCtx | BaseQueryCtx> =
   BaseCtx & {
     identity: Awaited<ReturnType<typeof requireAuth>>;
+    openai: OpenAI;
   };
 
 async function getCustomCtx<
   BaseCtx extends BaseActionCtx | BaseMutationCtx | BaseQueryCtx,
 >(ctx: BaseCtx): Promise<Context<BaseCtx>> {
   const identity = await requireAuth(ctx);
-  return { ...ctx, identity };
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  return { ...ctx, identity, openai };
 }
 
 async function requireAuth(

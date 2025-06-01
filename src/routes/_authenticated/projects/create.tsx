@@ -22,16 +22,17 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const from = Route.useSearch().from as Id<"projects">;
   const fromProject = useQuery({
-    ...convexQuery(api.projects.getProject, { id: from }),
+    ...convexQuery(api.functions.projects.getProject, { id: from }),
     enabled: !!from,
     select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
   });
 
   const mutation = useMutation({
-    mutationFn: useConvexMutation(api.projects.createProject),
+    mutationFn: useConvexMutation(api.functions.projects.createProject),
     onError: (error) => toast.error(error.message),
-    onSuccess: (data: typeof api.projects.createProject._returnType) =>
-      navigate({ params: { id: data }, to: "/projects/$id" }),
+    onSuccess: (
+      data: typeof api.functions.projects.createProject._returnType,
+    ) => navigate({ params: { id: data }, to: "/projects/$id" }),
   });
   const form = useProjectForm({
     defaultValues: fromProject.data,

@@ -23,7 +23,7 @@ export function EditExperimentDialog(props: {
   experiment: Doc<"experiments">;
 }) {
   const editExperiment = useMutation({
-    mutationFn: useConvexMutation(api.experiments.editExperiment),
+    mutationFn: useConvexMutation(api.functions.experiments.editExperiment),
   });
 
   const form = useExperimentForm({

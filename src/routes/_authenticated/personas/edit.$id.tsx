@@ -19,13 +19,13 @@ export const Route = createFileRoute("/_authenticated/personas/edit/$id")({
 function RouteComponent() {
   const personaId = Route.useParams().id as Id<"personas">;
   const fromPersona = useQuery({
-    ...convexQuery(api.personas.getPersona, { id: personaId }),
+    ...convexQuery(api.functions.personas.getPersona, { id: personaId }),
     select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
   });
 
   const navigate = Route.useNavigate();
   const editPersona = useMutation({
-    mutationFn: useConvexMutation(api.personas.editPersona),
+    mutationFn: useConvexMutation(api.functions.personas.editPersona),
     onError: (error) => toast.error(error.message),
     onSuccess: () =>
       navigate({ params: { id: personaId }, to: "/personas/$id" }),

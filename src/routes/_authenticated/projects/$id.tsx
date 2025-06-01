@@ -28,14 +28,16 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const projectId = Route.useParams().id as Id<"projects">;
   const project = useQuery(
-    convexQuery(api.projects.getProject, { id: projectId }),
+    convexQuery(api.functions.projects.getProject, { id: projectId }),
   );
   const experiments = useQuery(
-    convexQuery(api.experiments.listProjectExperiments, { projectId }),
+    convexQuery(api.functions.experiments.listProjectExperiments, {
+      projectId,
+    }),
   );
 
   const deleteProject = useMutation({
-    mutationFn: useConvexMutation(api.projects.deleteProject),
+    mutationFn: useConvexMutation(api.functions.projects.deleteProject),
     onError: (error) => toast.error(error.message),
     onSuccess: () => navigate({ to: "/projects" }),
   });

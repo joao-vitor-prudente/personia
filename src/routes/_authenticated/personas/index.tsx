@@ -30,7 +30,7 @@ function RouteComponent() {
   const sorting = useStore(form.store, (state) => state.values.sorting);
 
   const personas = useQuery(
-    convexQuery(api.personas.listPersonas, { search, sorting }),
+    convexQuery(api.functions.personas.listPersonas, { search, sorting }),
   );
 
   return (

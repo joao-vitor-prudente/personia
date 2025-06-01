@@ -34,11 +34,11 @@ function RouteComponent() {
   const personaId = Route.useParams().id as Id<"personas">;
   const navigate = Route.useNavigate();
   const persona = useQuery(
-    convexQuery(api.personas.getPersona, { id: personaId }),
+    convexQuery(api.functions.personas.getPersona, { id: personaId }),
   );
 
   const deletePersona = useMutation({
-    mutationFn: useConvexMutation(api.personas.deletePersona),
+    mutationFn: useConvexMutation(api.functions.personas.deletePersona),
     onError: (error) => toast.error(error.message),
     onSuccess: () => navigate({ to: "/personas" }),
   });

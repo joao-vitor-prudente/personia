@@ -49,11 +49,11 @@ function RouteComponent() {
   const experimentId = Route.useParams().id as Id<"experiments">;
   const navigate = Route.useNavigate();
   const experiment = useQuery(
-    convexQuery(api.experiments.getExperiment, { id: experimentId }),
+    convexQuery(api.functions.experiments.getExperiment, { id: experimentId }),
   );
 
   const deleteExperiment = useMutation({
-    mutationFn: useConvexMutation(api.experiments.deleteExperiment),
+    mutationFn: useConvexMutation(api.functions.experiments.deleteExperiment),
     onError: (error) => toast.error(error.message),
     onSuccess: () =>
       navigate({
@@ -63,7 +63,7 @@ function RouteComponent() {
   });
 
   const messages = usePaginatedQuery(
-    api.messages.listMessages,
+    api.functions.messages.listMessages,
     { experimentId: experimentId },
     { initialNumItems: 20 },
   );

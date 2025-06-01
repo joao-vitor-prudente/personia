@@ -21,7 +21,10 @@ export function ExperimentForm(props: {
   ref: RefObject<HTMLFormElement | null>;
 }) {
   const personas = useQuery({
-    ...convexQuery(api.personas.listPersonas, { search: "", sorting: "asc" }),
+    ...convexQuery(api.functions.personas.listPersonas, {
+      search: "",
+      sorting: "asc",
+    }),
     select: (data) =>
       data.map((persona) => ({
         label: persona.name,

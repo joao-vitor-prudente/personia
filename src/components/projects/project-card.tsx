@@ -32,10 +32,10 @@ import {
 import { TypographySmall } from "@/components/ui/typography.tsx";
 
 export function ProjectCard(props: {
-  project: typeof api.projects.getProject._returnType;
+  project: typeof api.functions.projects.getProject._returnType;
 }) {
   const deleteProject = useMutation({
-    mutationFn: useConvexMutation(api.projects.deleteProject),
+    mutationFn: useConvexMutation(api.functions.projects.deleteProject),
     onError: (error) => toast.error(error.message),
   });
   return (

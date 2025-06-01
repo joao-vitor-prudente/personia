@@ -2,6 +2,16 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  assistants: defineTable({
+    experimentId: v.id("experiments"),
+    openaiAssistantId: v.string(),
+    personaId: v.id("personas"),
+    projectId: v.id("projects"),
+  }).index("project_experiment_persona", [
+    "personaId",
+    "projectId",
+    "experimentId",
+  ]),
   experiments: defineTable({
     name: v.string(),
     organizationId: v.string(),

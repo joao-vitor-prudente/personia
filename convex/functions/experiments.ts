@@ -1,9 +1,9 @@
 import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { ConvexError, v } from "convex/values";
 
-import type { Id } from "./_generated/dataModel";
+import type { Id } from "../_generated/dataModel";
 
-import { mutation, type MutationCtx, query, type QueryCtx } from "./context";
+import { mutation, type MutationCtx, query, type QueryCtx } from "../context";
 import { getProjectHelper } from "./projects";
 
 export const listProjectExperiments = query({

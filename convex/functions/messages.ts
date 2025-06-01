@@ -2,7 +2,7 @@ import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
-import { mutation, query } from "./context";
+import { mutation, query } from "../context";
 import { getExperimentHelper } from "./experiments";
 
 export const listMessages = query({

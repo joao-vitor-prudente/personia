@@ -1,7 +1,13 @@
 // src/components/multi-select.tsx
 
 import { cva, type VariantProps } from "class-variance-authority";
-import { CheckIcon, ChevronDown, WandSparkles, XCircle, XIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronDown,
+  WandSparkles,
+  XCircle,
+  XIcon,
+} from "lucide-react";
 import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -13,9 +19,13 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator
+  CommandSeparator,
 } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -109,22 +119,20 @@ interface MultiSelectProps
   placeholder?: string;
 }
 
-export function MultiSelect(
-  {
-    animation = 0,
-    asChild = false,
-    className,
-    defaultValue = [],
-    maxCount = 3,
-    modalPopover = false,
-    onValueChange,
-    options,
-    placeholder = "Select options",
-    ref,
-    variant,
-    ...props
-  }: MultiSelectProps,
-) {
+export function MultiSelect({
+  animation = 0,
+  asChild = false,
+  className,
+  defaultValue = [],
+  maxCount = 3,
+  modalPopover = false,
+  onValueChange,
+  options,
+  placeholder = "Select options",
+  ref,
+  variant,
+  ...props
+}: MultiSelectProps) {
   const [selectedValues, setSelectedValues] =
     React.useState<string[]>(defaultValue);
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);

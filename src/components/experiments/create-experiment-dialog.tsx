@@ -31,10 +31,10 @@ export function CreateExperimentDialog(
   ),
 ) {
   const createExperiment = useMutation({
-    mutationFn: useConvexMutation(api.experiments.createExperiment),
+    mutationFn: useConvexMutation(api.functions.experiments.createExperiment),
     onError: (error) => toast.error(error.message),
     onSuccess: async (
-      id: typeof api.experiments.createExperiment._returnType,
+      id: typeof api.functions.experiments.createExperiment._returnType,
     ) => {
       await props.onCreate(id);
     },

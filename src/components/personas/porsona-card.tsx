@@ -37,10 +37,10 @@ import {
 } from "@/components/ui/typography.tsx";
 
 export function PersonaCard(props: {
-  persona: typeof api.personas.getPersona._returnType;
+  persona: typeof api.functions.personas.getPersona._returnType;
 }) {
   const deletePersona = useMutation({
-    mutationFn: useConvexMutation(api.personas.deletePersona),
+    mutationFn: useConvexMutation(api.functions.personas.deletePersona),
     onError: (error) => toast.error(error.message),
   });
 

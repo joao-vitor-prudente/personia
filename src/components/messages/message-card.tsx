@@ -10,7 +10,7 @@ import { TypographyMuted, TypographyP } from "@/components/ui/typography.tsx";
 import { dateFormatter, timeFormatter } from "@/lib/date.ts";
 
 export function MessageCard(props: {
-  message: (typeof api.messages.listMessages._returnType)["page"][number];
+  message: (typeof api.functions.messages.listMessages._returnType)["page"][number];
 }) {
   return (
     <AccordionItem

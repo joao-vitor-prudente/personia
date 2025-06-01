@@ -21,17 +21,18 @@ export const Route = createFileRoute("/_authenticated/personas/create")({
 function RouteComponent() {
   const from = Route.useSearch().from as Id<"personas">;
   const fromPersona = useQuery({
-    ...convexQuery(api.personas.getPersona, { id: from }),
+    ...convexQuery(api.functions.personas.getPersona, { id: from }),
     enabled: !!from,
     select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
   });
 
   const navigate = Route.useNavigate();
   const createPersona = useMutation({
-    mutationFn: useConvexMutation(api.personas.createPersona),
+    mutationFn: useConvexMutation(api.functions.personas.createPersona),
     onError: (error) => toast.error(error.message),
-    onSuccess: (data: typeof api.personas.createPersona._returnType) =>
-      navigate({ params: { id: data }, to: "/personas/$id" }),
+    onSuccess: (
+      data: typeof api.functions.personas.createPersona._returnType,
+    ) => navigate({ params: { id: data }, to: "/personas/$id" }),
   });
   const form = usePersonaForm({
     defaultValues: fromPersona.data,

@@ -19,13 +19,13 @@ export const Route = createFileRoute("/_authenticated/projects/edit/$id")({
 function RouteComponent() {
   const projectId = Route.useParams().id as Id<"projects">;
   const project = useQuery({
-    ...convexQuery(api.projects.getProject, { id: projectId }),
+    ...convexQuery(api.functions.projects.getProject, { id: projectId }),
     select: ({ _creationTime, _id, organizationId: _, ...data }) => data,
   });
 
   const navigate = Route.useNavigate();
   const editProject = useMutation({
-    mutationFn: useConvexMutation(api.projects.editProject),
+    mutationFn: useConvexMutation(api.functions.projects.editProject),
     onError: (error) => toast.error(error.message),
     onSuccess: () =>
       navigate({ params: { id: projectId }, to: "/projects/$id" }),

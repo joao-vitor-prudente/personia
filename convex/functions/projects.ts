@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 
-import { type Id } from "./_generated/dataModel";
-import { mutation, type MutationCtx, query, type QueryCtx } from "./context";
+import { type Id } from "../_generated/dataModel";
+import { mutation, type MutationCtx, query, type QueryCtx } from "../context";
 
 export const createProject = mutation({
   args: {
