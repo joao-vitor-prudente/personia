@@ -1,7 +1,7 @@
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 
-import { type Id } from "../_generated/dataModel";
-import { mutation, type MutationCtx, query, type QueryCtx } from "../context";
+import { mutation, query } from "../context";
+import { getPersonaHelper } from "../helpers/personas";
 
 export const createPersona = mutation({
   args: {
@@ -82,14 +82,3 @@ export const deletePersona = mutation({
     await ctx.db.delete(args.id);
   },
 });
-
-async function getPersonaHelper(
-  ctx: MutationCtx | QueryCtx,
-  id: Id<"personas">,
-) {
-  const persona = await ctx.db.get(id);
-  if (!persona) throw new ConvexError("Persona not found");
-  if (persona.organizationId !== ctx.identity.organization.id)
-    throw new ConvexError("User is not authorized to view this persona");
-  return persona;
-}

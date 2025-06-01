@@ -10,205 +10,205 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as UnauthenticatedRouteImport } from "./routes/_unauthenticated/route";
-import { Route as AuthenticatedRouteImport } from "./routes/_authenticated/route";
-import { Route as UnauthenticatedIndexImport } from "./routes/_unauthenticated/index";
-import { Route as AuthenticatedProjectsIndexImport } from "./routes/_authenticated/projects/index";
-import { Route as AuthenticatedPersonasIndexImport } from "./routes/_authenticated/personas/index";
-import { Route as AuthenticatedProjectsCreateImport } from "./routes/_authenticated/projects/create";
-import { Route as AuthenticatedProjectsIdImport } from "./routes/_authenticated/projects/$id";
-import { Route as AuthenticatedPersonasCreateImport } from "./routes/_authenticated/personas/create";
-import { Route as AuthenticatedPersonasIdImport } from "./routes/_authenticated/personas/$id";
-import { Route as AuthenticatedExperimentsIdImport } from "./routes/_authenticated/experiments/$id";
-import { Route as AuthenticatedProjectsEditIdImport } from "./routes/_authenticated/projects/edit.$id";
-import { Route as AuthenticatedPersonasEditIdImport } from "./routes/_authenticated/personas/edit.$id";
+import { Route as rootRoute } from './routes/__root'
+import { Route as UnauthenticatedRouteImport } from './routes/_unauthenticated/route'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
+import { Route as UnauthenticatedIndexImport } from './routes/_unauthenticated/index'
+import { Route as AuthenticatedProjectsIndexImport } from './routes/_authenticated/projects/index'
+import { Route as AuthenticatedPersonasIndexImport } from './routes/_authenticated/personas/index'
+import { Route as AuthenticatedProjectsCreateImport } from './routes/_authenticated/projects/create'
+import { Route as AuthenticatedProjectsIdImport } from './routes/_authenticated/projects/$id'
+import { Route as AuthenticatedPersonasCreateImport } from './routes/_authenticated/personas/create'
+import { Route as AuthenticatedPersonasIdImport } from './routes/_authenticated/personas/$id'
+import { Route as AuthenticatedExperimentsIdImport } from './routes/_authenticated/experiments/$id'
+import { Route as AuthenticatedProjectsEditIdImport } from './routes/_authenticated/projects/edit.$id'
+import { Route as AuthenticatedPersonasEditIdImport } from './routes/_authenticated/personas/edit.$id'
 
 // Create/Update Routes
 
 const UnauthenticatedRouteRoute = UnauthenticatedRouteImport.update({
-  id: "/_unauthenticated",
+  id: '/_unauthenticated',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const AuthenticatedRouteRoute = AuthenticatedRouteImport.update({
-  id: "/_authenticated",
+  id: '/_authenticated',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 const UnauthenticatedIndexRoute = UnauthenticatedIndexImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => UnauthenticatedRouteRoute,
-} as any);
+} as any)
 
 const AuthenticatedProjectsIndexRoute = AuthenticatedProjectsIndexImport.update(
   {
-    id: "/projects/",
-    path: "/projects/",
+    id: '/projects/',
+    path: '/projects/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any,
-);
+)
 
 const AuthenticatedPersonasIndexRoute = AuthenticatedPersonasIndexImport.update(
   {
-    id: "/personas/",
-    path: "/personas/",
+    id: '/personas/',
+    path: '/personas/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any,
-);
+)
 
 const AuthenticatedProjectsCreateRoute =
   AuthenticatedProjectsCreateImport.update({
-    id: "/projects/create",
-    path: "/projects/create",
+    id: '/projects/create',
+    path: '/projects/create',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any);
+  } as any)
 
 const AuthenticatedProjectsIdRoute = AuthenticatedProjectsIdImport.update({
-  id: "/projects/$id",
-  path: "/projects/$id",
+  id: '/projects/$id',
+  path: '/projects/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any);
+} as any)
 
 const AuthenticatedPersonasCreateRoute =
   AuthenticatedPersonasCreateImport.update({
-    id: "/personas/create",
-    path: "/personas/create",
+    id: '/personas/create',
+    path: '/personas/create',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any);
+  } as any)
 
 const AuthenticatedPersonasIdRoute = AuthenticatedPersonasIdImport.update({
-  id: "/personas/$id",
-  path: "/personas/$id",
+  id: '/personas/$id',
+  path: '/personas/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any);
+} as any)
 
 const AuthenticatedExperimentsIdRoute = AuthenticatedExperimentsIdImport.update(
   {
-    id: "/experiments/$id",
-    path: "/experiments/$id",
+    id: '/experiments/$id',
+    path: '/experiments/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any,
-);
+)
 
 const AuthenticatedProjectsEditIdRoute =
   AuthenticatedProjectsEditIdImport.update({
-    id: "/projects/edit/$id",
-    path: "/projects/edit/$id",
+    id: '/projects/edit/$id',
+    path: '/projects/edit/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any);
+  } as any)
 
 const AuthenticatedPersonasEditIdRoute =
   AuthenticatedPersonasEditIdImport.update({
-    id: "/personas/edit/$id",
-    path: "/personas/edit/$id",
+    id: '/personas/edit/$id',
+    path: '/personas/edit/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any);
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/_authenticated": {
-      id: "/_authenticated";
-      path: "";
-      fullPath: "";
-      preLoaderRoute: typeof AuthenticatedRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_unauthenticated": {
-      id: "/_unauthenticated";
-      path: "";
-      fullPath: "";
-      preLoaderRoute: typeof UnauthenticatedRouteImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_unauthenticated/": {
-      id: "/_unauthenticated/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof UnauthenticatedIndexImport;
-      parentRoute: typeof UnauthenticatedRouteImport;
-    };
-    "/_authenticated/experiments/$id": {
-      id: "/_authenticated/experiments/$id";
-      path: "/experiments/$id";
-      fullPath: "/experiments/$id";
-      preLoaderRoute: typeof AuthenticatedExperimentsIdImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/personas/$id": {
-      id: "/_authenticated/personas/$id";
-      path: "/personas/$id";
-      fullPath: "/personas/$id";
-      preLoaderRoute: typeof AuthenticatedPersonasIdImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/personas/create": {
-      id: "/_authenticated/personas/create";
-      path: "/personas/create";
-      fullPath: "/personas/create";
-      preLoaderRoute: typeof AuthenticatedPersonasCreateImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/projects/$id": {
-      id: "/_authenticated/projects/$id";
-      path: "/projects/$id";
-      fullPath: "/projects/$id";
-      preLoaderRoute: typeof AuthenticatedProjectsIdImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/projects/create": {
-      id: "/_authenticated/projects/create";
-      path: "/projects/create";
-      fullPath: "/projects/create";
-      preLoaderRoute: typeof AuthenticatedProjectsCreateImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/personas/": {
-      id: "/_authenticated/personas/";
-      path: "/personas";
-      fullPath: "/personas";
-      preLoaderRoute: typeof AuthenticatedPersonasIndexImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/projects/": {
-      id: "/_authenticated/projects/";
-      path: "/projects";
-      fullPath: "/projects";
-      preLoaderRoute: typeof AuthenticatedProjectsIndexImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/personas/edit/$id": {
-      id: "/_authenticated/personas/edit/$id";
-      path: "/personas/edit/$id";
-      fullPath: "/personas/edit/$id";
-      preLoaderRoute: typeof AuthenticatedPersonasEditIdImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
-    "/_authenticated/projects/edit/$id": {
-      id: "/_authenticated/projects/edit/$id";
-      path: "/projects/edit/$id";
-      fullPath: "/projects/edit/$id";
-      preLoaderRoute: typeof AuthenticatedProjectsEditIdImport;
-      parentRoute: typeof AuthenticatedRouteImport;
-    };
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/_unauthenticated': {
+      id: '/_unauthenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof UnauthenticatedRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/_unauthenticated/': {
+      id: '/_unauthenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof UnauthenticatedIndexImport
+      parentRoute: typeof UnauthenticatedRouteImport
+    }
+    '/_authenticated/experiments/$id': {
+      id: '/_authenticated/experiments/$id'
+      path: '/experiments/$id'
+      fullPath: '/experiments/$id'
+      preLoaderRoute: typeof AuthenticatedExperimentsIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/personas/$id': {
+      id: '/_authenticated/personas/$id'
+      path: '/personas/$id'
+      fullPath: '/personas/$id'
+      preLoaderRoute: typeof AuthenticatedPersonasIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/personas/create': {
+      id: '/_authenticated/personas/create'
+      path: '/personas/create'
+      fullPath: '/personas/create'
+      preLoaderRoute: typeof AuthenticatedPersonasCreateImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/$id': {
+      id: '/_authenticated/projects/$id'
+      path: '/projects/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof AuthenticatedProjectsIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/create': {
+      id: '/_authenticated/projects/create'
+      path: '/projects/create'
+      fullPath: '/projects/create'
+      preLoaderRoute: typeof AuthenticatedProjectsCreateImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/personas/': {
+      id: '/_authenticated/personas/'
+      path: '/personas'
+      fullPath: '/personas'
+      preLoaderRoute: typeof AuthenticatedPersonasIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/': {
+      id: '/_authenticated/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/personas/edit/$id': {
+      id: '/_authenticated/personas/edit/$id'
+      path: '/personas/edit/$id'
+      fullPath: '/personas/edit/$id'
+      preLoaderRoute: typeof AuthenticatedPersonasEditIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/projects/edit/$id': {
+      id: '/_authenticated/projects/edit/$id'
+      path: '/projects/edit/$id'
+      fullPath: '/projects/edit/$id'
+      preLoaderRoute: typeof AuthenticatedProjectsEditIdImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
   }
 }
 
 // Create and export the route tree
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedExperimentsIdRoute: typeof AuthenticatedExperimentsIdRoute;
-  AuthenticatedPersonasIdRoute: typeof AuthenticatedPersonasIdRoute;
-  AuthenticatedPersonasCreateRoute: typeof AuthenticatedPersonasCreateRoute;
-  AuthenticatedProjectsIdRoute: typeof AuthenticatedProjectsIdRoute;
-  AuthenticatedProjectsCreateRoute: typeof AuthenticatedProjectsCreateRoute;
-  AuthenticatedPersonasIndexRoute: typeof AuthenticatedPersonasIndexRoute;
-  AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute;
-  AuthenticatedPersonasEditIdRoute: typeof AuthenticatedPersonasEditIdRoute;
-  AuthenticatedProjectsEditIdRoute: typeof AuthenticatedProjectsEditIdRoute;
+  AuthenticatedExperimentsIdRoute: typeof AuthenticatedExperimentsIdRoute
+  AuthenticatedPersonasIdRoute: typeof AuthenticatedPersonasIdRoute
+  AuthenticatedPersonasCreateRoute: typeof AuthenticatedPersonasCreateRoute
+  AuthenticatedProjectsIdRoute: typeof AuthenticatedProjectsIdRoute
+  AuthenticatedProjectsCreateRoute: typeof AuthenticatedProjectsCreateRoute
+  AuthenticatedPersonasIndexRoute: typeof AuthenticatedPersonasIndexRoute
+  AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
+  AuthenticatedPersonasEditIdRoute: typeof AuthenticatedPersonasEditIdRoute
+  AuthenticatedProjectsEditIdRoute: typeof AuthenticatedProjectsEditIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -221,123 +221,123 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
   AuthenticatedPersonasEditIdRoute: AuthenticatedPersonasEditIdRoute,
   AuthenticatedProjectsEditIdRoute: AuthenticatedProjectsEditIdRoute,
-};
+}
 
 const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren);
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface UnauthenticatedRouteRouteChildren {
-  UnauthenticatedIndexRoute: typeof UnauthenticatedIndexRoute;
+  UnauthenticatedIndexRoute: typeof UnauthenticatedIndexRoute
 }
 
 const UnauthenticatedRouteRouteChildren: UnauthenticatedRouteRouteChildren = {
   UnauthenticatedIndexRoute: UnauthenticatedIndexRoute,
-};
+}
 
 const UnauthenticatedRouteRouteWithChildren =
-  UnauthenticatedRouteRoute._addFileChildren(UnauthenticatedRouteRouteChildren);
+  UnauthenticatedRouteRoute._addFileChildren(UnauthenticatedRouteRouteChildren)
 
 export interface FileRoutesByFullPath {
-  "": typeof UnauthenticatedRouteRouteWithChildren;
-  "/": typeof UnauthenticatedIndexRoute;
-  "/experiments/$id": typeof AuthenticatedExperimentsIdRoute;
-  "/personas/$id": typeof AuthenticatedPersonasIdRoute;
-  "/personas/create": typeof AuthenticatedPersonasCreateRoute;
-  "/projects/$id": typeof AuthenticatedProjectsIdRoute;
-  "/projects/create": typeof AuthenticatedProjectsCreateRoute;
-  "/personas": typeof AuthenticatedPersonasIndexRoute;
-  "/projects": typeof AuthenticatedProjectsIndexRoute;
-  "/personas/edit/$id": typeof AuthenticatedPersonasEditIdRoute;
-  "/projects/edit/$id": typeof AuthenticatedProjectsEditIdRoute;
+  '': typeof UnauthenticatedRouteRouteWithChildren
+  '/': typeof UnauthenticatedIndexRoute
+  '/experiments/$id': typeof AuthenticatedExperimentsIdRoute
+  '/personas/$id': typeof AuthenticatedPersonasIdRoute
+  '/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/projects/create': typeof AuthenticatedProjectsCreateRoute
+  '/personas': typeof AuthenticatedPersonasIndexRoute
+  '/projects': typeof AuthenticatedProjectsIndexRoute
+  '/personas/edit/$id': typeof AuthenticatedPersonasEditIdRoute
+  '/projects/edit/$id': typeof AuthenticatedProjectsEditIdRoute
 }
 
 export interface FileRoutesByTo {
-  "": typeof AuthenticatedRouteRouteWithChildren;
-  "/": typeof UnauthenticatedIndexRoute;
-  "/experiments/$id": typeof AuthenticatedExperimentsIdRoute;
-  "/personas/$id": typeof AuthenticatedPersonasIdRoute;
-  "/personas/create": typeof AuthenticatedPersonasCreateRoute;
-  "/projects/$id": typeof AuthenticatedProjectsIdRoute;
-  "/projects/create": typeof AuthenticatedProjectsCreateRoute;
-  "/personas": typeof AuthenticatedPersonasIndexRoute;
-  "/projects": typeof AuthenticatedProjectsIndexRoute;
-  "/personas/edit/$id": typeof AuthenticatedPersonasEditIdRoute;
-  "/projects/edit/$id": typeof AuthenticatedProjectsEditIdRoute;
+  '': typeof AuthenticatedRouteRouteWithChildren
+  '/': typeof UnauthenticatedIndexRoute
+  '/experiments/$id': typeof AuthenticatedExperimentsIdRoute
+  '/personas/$id': typeof AuthenticatedPersonasIdRoute
+  '/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/projects/create': typeof AuthenticatedProjectsCreateRoute
+  '/personas': typeof AuthenticatedPersonasIndexRoute
+  '/projects': typeof AuthenticatedProjectsIndexRoute
+  '/personas/edit/$id': typeof AuthenticatedPersonasEditIdRoute
+  '/projects/edit/$id': typeof AuthenticatedProjectsEditIdRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
-  "/_unauthenticated": typeof UnauthenticatedRouteRouteWithChildren;
-  "/_unauthenticated/": typeof UnauthenticatedIndexRoute;
-  "/_authenticated/experiments/$id": typeof AuthenticatedExperimentsIdRoute;
-  "/_authenticated/personas/$id": typeof AuthenticatedPersonasIdRoute;
-  "/_authenticated/personas/create": typeof AuthenticatedPersonasCreateRoute;
-  "/_authenticated/projects/$id": typeof AuthenticatedProjectsIdRoute;
-  "/_authenticated/projects/create": typeof AuthenticatedProjectsCreateRoute;
-  "/_authenticated/personas/": typeof AuthenticatedPersonasIndexRoute;
-  "/_authenticated/projects/": typeof AuthenticatedProjectsIndexRoute;
-  "/_authenticated/personas/edit/$id": typeof AuthenticatedPersonasEditIdRoute;
-  "/_authenticated/projects/edit/$id": typeof AuthenticatedProjectsEditIdRoute;
+  __root__: typeof rootRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/_unauthenticated': typeof UnauthenticatedRouteRouteWithChildren
+  '/_unauthenticated/': typeof UnauthenticatedIndexRoute
+  '/_authenticated/experiments/$id': typeof AuthenticatedExperimentsIdRoute
+  '/_authenticated/personas/$id': typeof AuthenticatedPersonasIdRoute
+  '/_authenticated/personas/create': typeof AuthenticatedPersonasCreateRoute
+  '/_authenticated/projects/$id': typeof AuthenticatedProjectsIdRoute
+  '/_authenticated/projects/create': typeof AuthenticatedProjectsCreateRoute
+  '/_authenticated/personas/': typeof AuthenticatedPersonasIndexRoute
+  '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
+  '/_authenticated/personas/edit/$id': typeof AuthenticatedPersonasEditIdRoute
+  '/_authenticated/projects/edit/$id': typeof AuthenticatedProjectsEditIdRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | ""
-    | "/"
-    | "/experiments/$id"
-    | "/personas/$id"
-    | "/personas/create"
-    | "/projects/$id"
-    | "/projects/create"
-    | "/personas"
-    | "/projects"
-    | "/personas/edit/$id"
-    | "/projects/edit/$id";
-  fileRoutesByTo: FileRoutesByTo;
+    | ''
+    | '/'
+    | '/experiments/$id'
+    | '/personas/$id'
+    | '/personas/create'
+    | '/projects/$id'
+    | '/projects/create'
+    | '/personas'
+    | '/projects'
+    | '/personas/edit/$id'
+    | '/projects/edit/$id'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | ""
-    | "/"
-    | "/experiments/$id"
-    | "/personas/$id"
-    | "/personas/create"
-    | "/projects/$id"
-    | "/projects/create"
-    | "/personas"
-    | "/projects"
-    | "/personas/edit/$id"
-    | "/projects/edit/$id";
+    | ''
+    | '/'
+    | '/experiments/$id'
+    | '/personas/$id'
+    | '/personas/create'
+    | '/projects/$id'
+    | '/projects/create'
+    | '/personas'
+    | '/projects'
+    | '/personas/edit/$id'
+    | '/projects/edit/$id'
   id:
-    | "__root__"
-    | "/_authenticated"
-    | "/_unauthenticated"
-    | "/_unauthenticated/"
-    | "/_authenticated/experiments/$id"
-    | "/_authenticated/personas/$id"
-    | "/_authenticated/personas/create"
-    | "/_authenticated/projects/$id"
-    | "/_authenticated/projects/create"
-    | "/_authenticated/personas/"
-    | "/_authenticated/projects/"
-    | "/_authenticated/personas/edit/$id"
-    | "/_authenticated/projects/edit/$id";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/_authenticated'
+    | '/_unauthenticated'
+    | '/_unauthenticated/'
+    | '/_authenticated/experiments/$id'
+    | '/_authenticated/personas/$id'
+    | '/_authenticated/personas/create'
+    | '/_authenticated/projects/$id'
+    | '/_authenticated/projects/create'
+    | '/_authenticated/personas/'
+    | '/_authenticated/projects/'
+    | '/_authenticated/personas/edit/$id'
+    | '/_authenticated/projects/edit/$id'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
-  UnauthenticatedRouteRoute: typeof UnauthenticatedRouteRouteWithChildren;
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  UnauthenticatedRouteRoute: typeof UnauthenticatedRouteRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   UnauthenticatedRouteRoute: UnauthenticatedRouteRouteWithChildren,
-};
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {

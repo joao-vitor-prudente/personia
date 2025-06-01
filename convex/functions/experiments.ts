@@ -1,10 +1,9 @@
 import { getAllOrThrow } from "convex-helpers/server/relationships";
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 
-import type { Id } from "../_generated/dataModel";
-
-import { mutation, type MutationCtx, query, type QueryCtx } from "../context";
-import { getProjectHelper } from "./projects";
+import { mutation, query } from "../context";
+import { getExperimentHelper } from "../helpers/experiments";
+import { getProjectHelper } from "../helpers/projects";
 
 export const listProjectExperiments = query({
   args: {
@@ -30,25 +29,6 @@ export const getExperiment = query({
   },
 });
 
-export const createExperiment = mutation({
-  args: {
-    name: v.string(),
-    personaIds: v.array(v.id("personas")),
-    projectId: v.id("projects"),
-  },
-  handler: async (ctx, args) => {
-    await getProjectHelper(ctx, args.projectId);
-    return await ctx.db.insert("experiments", {
-      name: args.name,
-      organizationId: ctx.identity.organization.id,
-
-      owner: ctx.identity.email,
-      personaIds: args.personaIds,
-      projectId: args.projectId,
-    });
-  },
-});
-
 export const deleteExperiment = mutation({
   args: {
     id: v.id("experiments"),
@@ -70,14 +50,3 @@ export const editExperiment = mutation({
     await ctx.db.patch(id, args);
   },
 });
-
-export async function getExperimentHelper(
-  ctx: MutationCtx | QueryCtx,
-  id: Id<"experiments">,
-) {
-  const experiment = await ctx.db.get(id);
-  if (!experiment) throw new ConvexError("Experiment not found");
-  if (experiment.organizationId !== ctx.identity.organization.id)
-    throw new ConvexError("User is not authorized to view this experiment");
-  return experiment;
-}

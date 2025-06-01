@@ -10,32 +10,17 @@ import { OpenAI } from "openai";
 import {
   action as baseAction,
   type ActionCtx as BaseActionCtx,
-  internalAction as baseInternalAction,
-  internalMutation as baseInternalMutation,
-  internalQuery as baseInternalQuery,
   mutation as baseMutation,
   type MutationCtx as BaseMutationCtx,
   query as baseQuery,
   type QueryCtx as BaseQueryCtx,
-} from "./_generated/server";
+} from "../_generated/server";
 
 export const query = customQuery(baseQuery, customCtx(getCustomCtx));
-export const internalQuery = customQuery(
-  baseInternalQuery,
-  customCtx(getCustomCtx),
-);
 
 export const mutation = customMutation(baseMutation, customCtx(getCustomCtx));
-export const internalMutation = customMutation(
-  baseInternalMutation,
-  customCtx(getCustomCtx),
-);
 
 export const action = customAction(baseAction, customCtx(getCustomCtx));
-export const internalAction = customAction(
-  baseInternalAction,
-  customCtx(getCustomCtx),
-);
 
 export type ActionCtx = Context<BaseActionCtx>;
 export type MutationCtx = Context<BaseMutationCtx>;

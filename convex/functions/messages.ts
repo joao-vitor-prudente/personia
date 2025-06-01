@@ -3,7 +3,7 @@ import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 
 import { mutation, query } from "../context";
-import { getExperimentHelper } from "./experiments";
+import { getExperimentHelper } from "../helpers/experiments";
 
 export const listMessages = query({
   args: {

@@ -1,7 +1,7 @@
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 
-import { type Id } from "../_generated/dataModel";
-import { mutation, type MutationCtx, query, type QueryCtx } from "../context";
+import { mutation, query } from "../context";
+import { getProjectHelper } from "../helpers/projects";
 
 export const createProject = mutation({
   args: {
@@ -68,14 +68,3 @@ export const deleteProject = mutation({
     await ctx.db.delete(args.id);
   },
 });
-
-export async function getProjectHelper(
-  ctx: MutationCtx | QueryCtx,
-  id: Id<"projects">,
-) {
-  const project = await ctx.db.get(id);
-  if (!project) throw new ConvexError("Project not found");
-  if (project.organizationId !== ctx.identity.organization.id)
-    throw new ConvexError("User is not authorized to view this project");
-  return project;
-}

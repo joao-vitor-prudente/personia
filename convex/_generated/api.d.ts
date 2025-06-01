@@ -8,13 +8,19 @@
  * @module
  */
 
-import type * as context from "../context.js";
-import type * as functions_assistants from "../functions/assistants.js";
+import type * as context_index from "../context/index.js";
+import type * as context_internal from "../context/internal.js";
+import type * as context_public from "../context/public.js";
 import type * as functions_experiments from "../functions/experiments.js";
 import type * as functions_messages from "../functions/messages.js";
 import type * as functions_personas from "../functions/personas.js";
 import type * as functions_projects from "../functions/projects.js";
+import type * as helpers_assistants from "../helpers/assistants.js";
+import type * as helpers_experiments from "../helpers/experiments.js";
+import type * as helpers_personas from "../helpers/personas.js";
+import type * as helpers_projects from "../helpers/projects.js";
 import type * as index from "../index.js";
+import type * as workflows_createExperiments from "../workflows/createExperiments.js";
 
 import type {
   ApiFromModules,
@@ -31,13 +37,19 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  context: typeof context;
-  "functions/assistants": typeof functions_assistants;
+  "context/index": typeof context_index;
+  "context/internal": typeof context_internal;
+  "context/public": typeof context_public;
   "functions/experiments": typeof functions_experiments;
   "functions/messages": typeof functions_messages;
   "functions/personas": typeof functions_personas;
   "functions/projects": typeof functions_projects;
+  "helpers/assistants": typeof helpers_assistants;
+  "helpers/experiments": typeof helpers_experiments;
+  "helpers/personas": typeof helpers_personas;
+  "helpers/projects": typeof helpers_projects;
   index: typeof index;
+  "workflows/createExperiments": typeof workflows_createExperiments;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

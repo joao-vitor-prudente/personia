@@ -96,9 +96,6 @@ function RouteComponent() {
                   </Button>
                 </DialogTrigger>
                 <CreateExperimentDialog
-                  onCreate={(id) =>
-                    navigate({ params: { id }, to: "/experiments/$id" })
-                  }
                   projectId={projectId}
                 />
               </Dialog>

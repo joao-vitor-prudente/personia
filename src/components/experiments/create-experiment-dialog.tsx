@@ -20,24 +20,15 @@ import {
 } from "@/components/ui/dialog.tsx";
 
 export function CreateExperimentDialog(
-  props: {
-    onCreate: (id: Id<"experiments">) => Promise<void>;
-  } & (
-    | {
-        fromExperiment: Doc<"experiments">;
-        projectId?: undefined;
-      }
-    | { fromExperiment?: undefined; projectId: Id<"projects"> }
-  ),
+  props:
+    | { fromExperiment: Doc<"experiments">; projectId?: undefined }
+    | { fromExperiment?: undefined; projectId: Id<"projects"> },
 ) {
   const createExperiment = useMutation({
-    mutationFn: useConvexMutation(api.functions.experiments.createExperiment),
+    mutationFn: useConvexMutation(
+      api.workflows.createExperiments.createExperiments,
+    ),
     onError: (error) => toast.error(error.message),
-    onSuccess: async (
-      id: typeof api.functions.experiments.createExperiment._returnType,
-    ) => {
-      await props.onCreate(id);
-    },
   });
 
   const form = useExperimentForm({
@@ -69,7 +60,11 @@ export function CreateExperimentDialog(
         <DialogClose asChild>
           <Button variant="outline">Cancel</Button>
         </DialogClose>
-        <Button onClick={() => formRef.current?.requestSubmit()}>Create</Button>
+        <DialogClose>
+          <Button onClick={() => formRef.current?.requestSubmit()}>
+            Create
+          </Button>
+        </DialogClose>
       </DialogFooter>
     </DialogContent>
   );
