@@ -24,13 +24,7 @@ export const listProjectExperiments = query({
     return await Promise.all(
       experiments.map(async (experiment) => {
         const personas = await getAllOrThrow(ctx.db, experiment.personaIds);
-        const assistants = await getManyFrom(
-          ctx.db,
-          "assistants",
-          "experimentId",
-          experiment._id,
-        );
-        return { ...experiment, assistants, personas };
+        return { ...experiment, personas };
       }),
     );
   },
@@ -66,5 +60,21 @@ export const editExperiment = mutation({
   handler: async (ctx, { id, ...args }) => {
     await getExperimentHelper(ctx, id);
     await ctx.db.patch(id, args);
+  },
+});
+
+export const createExperiment = mutation({
+  args: {
+    name: v.string(),
+    personaIds: v.array(v.id("personas")),
+    projectId: v.id("projects"),
+  },
+  handler: async (ctx, args) => {
+    await getProjectHelper(ctx, args.projectId);
+    return await ctx.db.insert("experiments", {
+      ...args,
+      organizationId: ctx.identity.organization.id,
+      owner: ctx.identity.email,
+    });
   },
 });

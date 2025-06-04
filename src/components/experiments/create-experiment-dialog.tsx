@@ -20,15 +20,17 @@ import {
 } from "@/components/ui/dialog.tsx";
 
 export function CreateExperimentDialog(
-  props:
+  props: { onCreate: (id: Id<"experiments">) => void } & (
     | { fromExperiment: Doc<"experiments">; projectId?: undefined }
-    | { fromExperiment?: undefined; projectId: Id<"projects"> },
+    | { fromExperiment?: undefined; projectId: Id<"projects"> }
+  ),
 ) {
   const createExperiment = useMutation({
-    mutationFn: useConvexMutation(
-      api.workflows.createExperiments.createExperiments,
-    ),
+    mutationFn: useConvexMutation(api.functions.experiments.createExperiment),
     onError: (error) => toast.error(error.message),
+    onSuccess: (
+      id: typeof api.functions.experiments.createExperiment._returnType,
+    ) => { props.onCreate(id); },
   });
 
   const form = useExperimentForm({

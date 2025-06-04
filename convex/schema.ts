@@ -2,26 +2,6 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  assistants: defineTable({
-    experimentId: v.id("experiments"),
-    openai: v.union(
-      v.object({
-        assistantId: v.string(),
-        status: v.literal("finished"),
-      }),
-      v.object({
-        status: v.literal("pending"),
-      }),
-    ),
-    personaId: v.id("personas"),
-    projectId: v.id("projects"),
-  })
-    .index("experimentId", ["experimentId"])
-    .index("project_experiment_persona", [
-      "personaId",
-      "projectId",
-      "experimentId",
-    ]),
   experiments: defineTable({
     name: v.string(),
     organizationId: v.string(),
@@ -39,6 +19,7 @@ export default defineSchema({
           authorId: v.id("personas"),
           content: v.string(),
           finishedAt: v.number(),
+          openaiReplyId: v.string(),
           status: v.literal("finished"),
         }),
         v.object({

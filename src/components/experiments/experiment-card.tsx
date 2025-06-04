@@ -32,7 +32,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
-import { EllipsisLoader } from "@/components/ui/ellipsis-loader.tsx";
 import { TypographyH5, TypographyMuted } from "@/components/ui/typography.tsx";
 import { dateFormatter } from "@/lib/date.ts";
 
@@ -46,29 +45,17 @@ export function ExperimentCard(props: {
     onError: (error) => toast.error(error.message),
   });
 
-  const hasPendingAssistants = props.experiment.assistants.some(
-    (assistant) => assistant.openai.status === "pending",
-  );
-
   return (
     <AccordionItem className="space-y-4 pt-2" value={props.experiment._id}>
       <section className="bg-card text-card-foreground grid grid-cols-[repeat(4,_1fr)_auto] items-center rounded-xl border p-6 shadow-sm">
         <div>
           <Link
-            aria-disabled={hasPendingAssistants}
-            className="underline-offset-4 aria-[disabled=false]:hover:underline"
-            disabled={hasPendingAssistants}
+            className="underline-offset-4"
             params={{ id: props.experiment._id }}
             to="/experiments/$id"
           >
             <TypographyH5>{props.experiment.name}</TypographyH5>
           </Link>
-          {hasPendingAssistants ? (
-            <TypographyMuted>
-              <span>Creating assistants</span>
-              <EllipsisLoader />
-            </TypographyMuted>
-          ) : null}
         </div>
         <TypographyMuted className="flex gap-2">
           <User />
@@ -139,19 +126,11 @@ export function ExperimentCard(props: {
             <span> Personas</span>
           </TypographyH5>
           <ul className="space-y-4">
-            {props.experiment.personas.map((persona) => {
-              const assistant = props.experiment.assistants.find(
-                (assistant) => assistant.personaId === persona._id,
-              );
-              return (
-                <li key={persona._id}>
-                  <ExperimentPersonaCard
-                    isPending={assistant?.openai.status === "pending"}
-                    persona={persona}
-                  />
-                </li>
-              );
-            })}
+            {props.experiment.personas.map((persona) => (
+              <li key={persona._id}>
+                <ExperimentPersonaCard persona={persona} />
+              </li>
+            ))}
           </ul>
         </section>
       </AccordionContent>

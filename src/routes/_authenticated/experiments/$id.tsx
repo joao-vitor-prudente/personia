@@ -112,7 +112,7 @@ function RouteComponent() {
                 <CreateExperimentDialog
                   fromExperiment={experiment.data}
                   onCreate={(id) =>
-                    navigate({ params: { id }, to: "/projects/$id" })
+                    void navigate({ params: { id }, to: "/projects/$id" })
                   }
                 />
               </Dialog>

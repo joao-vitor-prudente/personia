@@ -52,7 +52,7 @@ export function MessageForm(props: {
 
 export function useMessageForm(props: { experimentId: Id<"experiments"> }) {
   const createMessage = useMutation({
-    mutationFn: useConvexMutation(api.functions.messages.sendMessage),
+    mutationFn: useConvexMutation(api.workflows.sendMessage.sendMessage),
     onError: (error) => toast.error(error.message),
     onSuccess: () => {
       form.reset();

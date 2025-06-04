@@ -15,12 +15,13 @@ import type * as functions_experiments from "../functions/experiments.js";
 import type * as functions_messages from "../functions/messages.js";
 import type * as functions_personas from "../functions/personas.js";
 import type * as functions_projects from "../functions/projects.js";
-import type * as helpers_assistants from "../helpers/assistants.js";
 import type * as helpers_experiments from "../helpers/experiments.js";
+import type * as helpers_messages from "../helpers/messages.js";
 import type * as helpers_personas from "../helpers/personas.js";
 import type * as helpers_projects from "../helpers/projects.js";
+import type * as helpers_prompts from "../helpers/prompts.js";
 import type * as index from "../index.js";
-import type * as workflows_createExperiments from "../workflows/createExperiments.js";
+import type * as workflows_sendMessage from "../workflows/sendMessage.js";
 
 import type {
   ApiFromModules,
@@ -44,12 +45,13 @@ declare const fullApi: ApiFromModules<{
   "functions/messages": typeof functions_messages;
   "functions/personas": typeof functions_personas;
   "functions/projects": typeof functions_projects;
-  "helpers/assistants": typeof helpers_assistants;
   "helpers/experiments": typeof helpers_experiments;
+  "helpers/messages": typeof helpers_messages;
   "helpers/personas": typeof helpers_personas;
   "helpers/projects": typeof helpers_projects;
+  "helpers/prompts": typeof helpers_prompts;
   index: typeof index;
-  "workflows/createExperiments": typeof workflows_createExperiments;
+  "workflows/sendMessage": typeof workflows_sendMessage;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

@@ -2,16 +2,12 @@ import { type Doc } from "@server/dataModel";
 import { Link } from "@tanstack/react-router";
 import { BriefcaseBusiness, Cake, MapPin, Mars, Venus } from "lucide-react";
 
-import { EllipsisLoader } from "@/components/ui/ellipsis-loader.tsx";
 import {
   TypographyMuted,
   TypographySmall,
 } from "@/components/ui/typography.tsx";
 
-export function ExperimentPersonaCard(props: {
-  isPending: boolean;
-  persona: Doc<"personas">;
-}) {
+export function ExperimentPersonaCard(props: { persona: Doc<"personas"> }) {
   return (
     <section className="grid grid-cols-[repeat(5,_1fr)_auto] items-center">
       <div>
@@ -22,12 +18,6 @@ export function ExperimentPersonaCard(props: {
         >
           <TypographySmall>{props.persona.name}</TypographySmall>
         </Link>
-        {props.isPending ? (
-          <TypographyMuted>
-            <span>Creating assistant</span>
-            <EllipsisLoader />
-          </TypographyMuted>
-        ) : null}
       </div>
       <TypographyMuted>{props.persona.nickname}</TypographyMuted>
       <TypographyMuted className="flex gap-2 items-center">
