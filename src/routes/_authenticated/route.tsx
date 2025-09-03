@@ -1,17 +1,12 @@
 import { RedirectToSignIn, useAuth, UserButton } from "@clerk/clerk-react";
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 
 import { ModeToggle } from "@/components/ui/mode-toggle.tsx";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuList,
+  NavigationMenuList
 } from "@/components/ui/navigation-menu";
 import { TypographyH3 } from "@/components/ui/typography.tsx";
 
@@ -29,7 +24,7 @@ function RouteComponent() {
   return (
     <>
       <header className="grid grid-cols-[auto_1fr_auto_auto] gap-8 px-8 py-4 border-b">
-        <TypographyH3>Personia</TypographyH3>
+        <TypographyH3>AI Personas</TypographyH3>
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>

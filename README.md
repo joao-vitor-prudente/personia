@@ -1,49 +1,52 @@
-# Welcome to your Convex + React (Vite) + Clerkapp
+# AI Personas
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+A web tool meant to assist marketing researchers by creating, managing and conversing with artificial personas tailored to the researcher's needs.
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+## Stack
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Vite](https://vitest.dev/) for optimized web hosting
-- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
-- [Clerk](https://clerk.com/) for authentication
+- [React](https://react.dev/)
+- [Tailwind](https://tailwindcss.com/)
+- [Tanstack](https://tanstack.com/)
+- [Shadcn](https://ui.shadcn.com/)
+- [Convex](https://www.convex.dev/)
+- [Clerk](https://clerk.com/)
 
-## Get started
+## Running the app
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
+Before running, you will need a convex and a clerk account and project for the app. 
 
+Fill in .env.local file with:
+
+```dotenv
+CONVEX_DEPLOYMENT=""
+VITE_CONVEX_URL=""
+VITE_CLERK_PUBLISHABLE_KEY=""
+VITE_CLERK_FRONTEND_API_URL=""
+CLERK_JWT_ISSUER_DOMAIN=""
+CLERK_SECRET_KEY=""
+OPENAI_API_KEY=""
 ```
-npm install
-npm run dev
-```
 
-If you're reading this README on GitHub and want to use this template, run:
+Run `npm run dev`
 
-```
-npm create convex@latest -- -t react-vite-clerk
-```
+If it's the first time running the app, convex will prompt you some to do some configuration, just follow the CLI.
 
-Then:
+## Project structure
 
-1. Follow steps 1 to 3 in the [Clerk onboarding guide](https://docs.convex.dev/auth/clerk#get-started)
-2. Paste the Issuer URL as `CLERK_JWT_ISSUER_DOMAIN` to your dev deployment environment variable settings on the Convex dashboard (see [docs](https://docs.convex.dev/auth/clerk#configuring-dev-and-prod-instances))
-3. Paste your publishable key as `VITE_CLERK_PUBLISHABLE_KEY="<your publishable key>"` to the `.env.local` file in this directory.
+There are Users and Organizations at the clerk level.
 
-If you want to sync Clerk user data via webhooks, check out this [example repo](https://github.com/thomasballinger/convex-clerk-users-table/).
+Each user is a member of one organization.
 
-## Learn more
+There are Projects, Personas, Experiments, Messages at the application level.
 
-To learn more about developing your project with Convex, check out:
+The base entities are personas and projects, which have a "many to many" relationship. Each project can have many personas and each persona can be in multiple projects. Projects and personas are specific to organizations.
 
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
+A project can have many Experiments which are the chats with the personas. For each experiment, you may assign any number of personas from the project.
 
-## Join the community
+The experiment has many messages from users and each message has many replies, being one for each persona in the experiment.
 
-Join thousands of developers building full-stack apps with Convex:
+All aspects of the project are based around managing those four entities, and it's basically a CRUD app. The only exception would be the message entity, which is managed through async workflows.
 
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
+## Considerations
+
+This is my first convex app and I do not have much experience modeling data in nosql, so I believe the implementation of the data model has much to improve.
